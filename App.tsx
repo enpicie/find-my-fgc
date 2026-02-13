@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
-import { Tournament, GeocodeResult } from './types';
-import { geocodeLocation } from './services/geminiService';
+import { Tournament } from './types';
+import { geocodeLocation } from './services/locationService';
 import { fetchTournaments } from './services/backendService';
 import SearchPanel from './components/SearchPanel';
 import TournamentCard from './components/TournamentCard';
@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]); // Default SF
   const [locationName, setLocationName] = useState('San Francisco, CA');
+  const [error, setError] = useState<string | null>(null);
 
   const toggleGameId = useCallback((id: number) => {
     setSelectedGameIds(prev => 
@@ -25,9 +26,10 @@ const App: React.FC = () => {
   const handleSearch = useCallback(async () => {
     if (!query) return;
     setLoading(true);
+    setError(null);
 
     try {
-      // 1. Geocode with Gemini
+      // 1. Geocode with Google Maps API (Non-AI)
       const geocode = await geocodeLocation(query);
       setCenter([geocode.lat, geocode.lng]);
       setLocationName(geocode.displayName);
@@ -43,8 +45,9 @@ const App: React.FC = () => {
       // Sort by date (ascending)
       const sorted = results.sort((a, b) => parseInt(a.date) - parseInt(b.date));
       setTournaments(sorted);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Search failed:", err);
+      setError(err.message || "Failed to find tournaments.");
       setTournaments([]);
     } finally {
       setLoading(false);
@@ -81,6 +84,12 @@ const App: React.FC = () => {
             onSearch={handleSearch}
             loading={loading}
           />
+
+          {error && (
+            <div className="bg-red-900/20 border border-red-500/50 p-3 rounded-lg text-red-400 text-xs">
+              {error}
+            </div>
+          )}
 
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
