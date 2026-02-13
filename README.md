@@ -1,39 +1,68 @@
-# FindMyFGC Local Setup Guide
 
-Follow these steps to run the application on your local machine for development and debugging.
+# FindMyFGC - Tournament Locator
 
-## 1. Backend Setup (Swift + Docker)
-The backend acts as a proxy to keep your API keys secure.
+Find local gaming tournaments on start.gg using a React frontend and a Swift (Vapor) backend proxy.
 
-1.  Navigate to the `backend` folder: `cd backend`
-2.  Build the Docker image:
-    ```bash
-    docker build -t fgc-backend .
-    ```
-3.  Run the container (Replace `YOUR_TOKEN` with your start.gg API key):
-    ```bash
-    docker run -p 8080:8080 -e STARTGG_API_KEY=YOUR_TOKEN fgc-backend
-    ```
-    The backend is now running at `http://localhost:8080`.
+## 🚀 Cloud Deployment (AWS + HCP Terraform)
 
-## 2. Frontend Setup (React + Vite)
-The frontend handles the UI and uses Gemini for geocoding.
+This project is configured for a professional, low-cost deployment on AWS using ECS Fargate.
 
-1.  In the project root, install dependencies:
-    ```bash
-    npm install
-    ```
-2.  Run the dev server with your Gemini API Key:
-    ```bash
-    # For Unix-like systems (macOS/Linux):
-    VITE_API_KEY=your_gemini_key npm run dev
+### 1. Prerequisites
+- AWS Account
+- HCP Terraform Account (connected to your GitHub)
+- Start.gg API Key
 
-    # For Windows (Command Prompt):
-    set VITE_API_KEY=your_gemini_key && npm run dev
-    ```
-3.  Open your browser to the URL displayed (usually `http://localhost:5173`).
+### 2. Infrastructure Deployment
+1.  **HCP Setup**: 
+    - Create a workspace in HCP Terraform.
+    - Connect it to your GitHub repository.
+    - Set the `aws_region` and `startgg_api_key` variables in HCP.
+2.  **Apply**: Push your changes to the `main` branch. GitHub Actions (or HCP directly) will trigger `terraform apply`.
+3.  **Outputs**: Grab the `ecr_repository_url` and `frontend_url` from the Terraform output console.
+
+### 3. CI/CD Workflow (GitHub Actions)
+Your GitHub Action should follow these steps:
+
+#### Backend Deployment
+```bash
+# 1. Login to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ECR_REPO_URL>
+
+# 2. Build & Push
+cd backend
+docker build -t <ECR_REPO_URL>:latest .
+docker push <ECR_REPO_URL>:latest
+
+# 3. Refresh ECS
+aws ecs update-service --cluster findmyfgc-cluster --service findmyfgc --force-new-deployment
+```
+
+#### Frontend Deployment
+```bash
+# 1. Build React
+npm install
+VITE_BACKEND_URL=<BACKEND_ALB_URL> npm run build
+
+# 2. Sync to S3
+aws s3 sync dist/ s3://<S3_BUCKET_NAME> --delete
+
+# 3. Invalidate CDN
+aws cloudfront create-invalidation --distribution-id <CF_DIST_ID> --paths "/*"
+```
+
+## 💻 Local Setup Guide
+
+### 1. Backend Setup (Swift + Docker)
+1.  Navigate to `backend` folder: `cd backend`
+2.  Build: `docker build -t fgc-backend .`
+3.  Run: `docker run -p 8080:8080 -e STARTGG_API_KEY=YOUR_TOKEN fgc-backend`
+
+### 2. Frontend Setup (React + Vite)
+1.  Install: `npm install`
+2.  Run: `VITE_API_KEY=your_gemini_key npm run dev`
 
 ## 🛠 Project Structure
+- `/terraform`: AWS Infrastructure as Code.
 - `/backend`: Swift Vapor application (Logic + Proxy).
 - `/services`: Frontend API wrappers.
 - `/components`: Reusable React UI elements.
