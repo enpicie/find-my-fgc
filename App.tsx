@@ -1,11 +1,19 @@
 
 import React, { useState, useCallback } from 'react';
 import { Tournament } from './types';
-import { geocodeLocation } from './services/geminiService';
+import { geocodeLocation as geminiGeocode } from './services/geminiService';
+import { geocodeLocation as googleGeocode } from './services/locationService';
 import { fetchTournaments } from './services/backendService';
 import SearchPanel from './components/SearchPanel';
 import TournamentCard from './components/TournamentCard';
 import Map from './components/Map';
+
+/**
+ * TOGGLE THIS BEFORE DEPLOYMENT
+ * true  -> Uses Gemini (AI) to reason about coordinates.
+ * false -> Uses Google Maps Geocoding API (Traditional).
+ */
+const USE_AI_GEOCODING = true;
 
 const App: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -16,6 +24,9 @@ const App: React.FC = () => {
   const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]); // Default SF
   const [locationName, setLocationName] = useState('San Francisco, CA');
   const [error, setError] = useState<string | null>(null);
+
+  // Select the geocoding implementation based on the toggle
+  const geocodeLocation = USE_AI_GEOCODING ? geminiGeocode : googleGeocode;
 
   const toggleGameId = useCallback((id: number) => {
     setSelectedGameIds(prev => 
@@ -29,6 +40,7 @@ const App: React.FC = () => {
     setError(null);
 
     try {
+      // Logic switches based on USE_AI_GEOCODING
       const geocode = await geocodeLocation(query);
       setCenter([geocode.lat, geocode.lng]);
       setLocationName(geocode.displayName);
@@ -42,6 +54,14 @@ const App: React.FC = () => {
 
       const sorted = results.sort((a, b) => parseInt(a.date) - parseInt(b.date));
       setTournaments(sorted);
+      
+      // Handle mobile scroll behavior
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          const resultsHeader = document.getElementById('results-heading');
+          resultsHeader?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
     } catch (err: any) {
       console.error("Search failed:", err);
       setError(err.message || "Failed to find tournaments.");
@@ -49,41 +69,36 @@ const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [query, radius, selectedGameIds]);
+  }, [query, radius, selectedGameIds, geocodeLocation]);
 
   return (
-    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-slate-950">
+    <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden bg-slate-950 font-sans">
+      
       {/* Header */}
-      <header className="bg-slate-900 border-b border-slate-800 p-4 shrink-0 flex items-center justify-between z-40">
+      <header className="bg-slate-900 border-b border-slate-800 p-4 shrink-0 flex items-center justify-between z-40 sticky top-0 md:relative">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-600 p-1.5 md:p-2 rounded-lg text-white font-bold text-lg md:text-xl leading-none">FG</div>
-          <h1 className="text-lg md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">
-            FindMyFGC
-          </h1>
+          <div className="bg-indigo-600 p-1.5 rounded-lg text-white font-bold text-lg leading-none">FG</div>
+          <div>
+            <h1 className="text-lg md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">
+              FindMyFGC
+            </h1>
+            <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1 uppercase">
+              Mode: <span className={USE_AI_GEOCODING ? "text-purple-400" : "text-emerald-400"}>
+                {USE_AI_GEOCODING ? "Gemini AI" : "Google Maps"}
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="text-slate-500 text-xs md:text-sm hidden sm:block">
+        <div className="text-slate-500 text-xs hidden sm:block">
           Events via <span className="text-indigo-400 font-bold">start.gg</span>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-grow flex flex-col md:flex-row overflow-hidden relative">
+      <main className="flex flex-col md:flex-row flex-grow min-h-0 relative">
         
-        {/* Map View: Top on mobile, Right on desktop */}
-        <div className="flex-none h-[250px] sm:h-[300px] md:h-full w-full md:flex-grow relative z-10 order-1 md:order-2 border-b md:border-b-0 border-slate-800">
-          <div className="absolute top-3 left-3 z-[1000] bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-full shadow-lg text-[10px] md:text-xs font-bold text-indigo-300 flex items-center gap-2 pointer-events-none">
-            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-            {locationName}
-          </div>
-          <Map 
-            center={center} 
-            zoom={11} 
-            tournaments={tournaments} 
-          />
-        </div>
-
-        {/* Sidebar: Bottom on mobile, Left on desktop */}
-        <div className="flex-grow md:flex-none w-full md:w-96 flex flex-col border-r border-slate-800 bg-slate-900 overflow-y-auto p-4 gap-6 scrollbar-thin scrollbar-thumb-slate-700 shrink-0 z-20 shadow-2xl order-2 md:order-1">
+        {/* Sidebar / Panel */}
+        <div className="w-full md:w-96 flex flex-col border-r border-slate-800 bg-slate-900 md:overflow-y-auto p-4 md:p-6 gap-6 shrink-0 z-20 shadow-2xl order-2 md:order-1">
           <SearchPanel 
             location={query}
             setLocation={setQuery}
@@ -101,8 +116,8 @@ const App: React.FC = () => {
             </div>
           )}
 
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-4 pb-24 md:pb-4">
+            <div id="results-heading" className="flex justify-between items-center scroll-mt-20">
               <h2 className="text-lg font-bold text-slate-300">Events ({tournaments.length})</h2>
               {tournaments.length > 0 && <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Upcoming</span>}
             </div>
@@ -122,13 +137,27 @@ const App: React.FC = () => {
               </div>
             )}
 
-            <div className="space-y-4 pb-8">
+            <div className="space-y-4">
               {tournaments.map((t) => (
                 <TournamentCard key={t.id} tournament={t} />
               ))}
             </div>
           </div>
         </div>
+
+        {/* Map View */}
+        <div className="h-[300px] md:h-full w-full md:flex-grow relative z-10 order-1 md:order-2 border-b md:border-b-0 border-slate-800 shrink-0">
+          <div className="absolute top-3 left-3 z-[1000] bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-full shadow-lg text-[10px] md:text-xs font-bold text-indigo-300 flex items-center gap-2 pointer-events-none">
+            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+            {locationName}
+          </div>
+          <Map 
+            center={center} 
+            zoom={11} 
+            tournaments={tournaments} 
+          />
+        </div>
+
       </main>
     </div>
   );

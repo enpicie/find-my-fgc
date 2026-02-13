@@ -14,6 +14,8 @@
         width: 100%;
         border-radius: 0.75rem;
       }
+      /* Ensure the map doesn't swallow touch events intended for scrolling the page */
+      .leaflet-map-pane { z-index: 1; }
     </style>
 <script type="importmap">
 {
@@ -27,7 +29,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="bg-slate-900 text-slate-100">
     <div id="root"></div>
 <script type="module" src="/index.tsx"></script>
 </body>
