@@ -1,0 +1,7 @@
+{
+  "name": "FindMyFGC - start.gg Event Locator",
+  "description": "A full-stack application to find local gaming tournaments on start.gg using a React frontend and a Swift backend proxy.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

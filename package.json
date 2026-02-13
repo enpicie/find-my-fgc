@@ -1,13 +1,21 @@
 {
-  "name": "find-my-fgc",
+  "name": "findmyfgc-frontend",
   "private": true,
-  "workspaces": ["packages/*"],
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev -w packages/client\" \"npm run dev -w packages/server\"",
-    "build": "npm run build -w packages/client && npm run build -w packages/server",
-    "install-all": "npm install"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.41.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "vite": "^5.1.4"
   }
 }

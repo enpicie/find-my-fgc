@@ -1,33 +1,40 @@
-# FindMyFGC
+# FindMyFGC Local Setup Guide
 
-## Local Development
+Follow these steps to run the application on your local machine for development and debugging.
 
-1. Create `packages/server/.env` and add `STARTGG_API_KEY`.
-2. Create `packages/client/.env` and add `VITE_GOOGLE_MAPS_API_KEY`.
-3. From root: `npm install && npm run dev`.
+## 1. Backend Setup (Swift + Docker)
+The backend acts as a proxy to keep your API keys secure.
 
-## Deployment Strategy (AWS via Terraform)
+1.  Navigate to the `backend` folder: `cd backend`
+2.  Build the Docker image:
+    ```bash
+    docker build -t fgc-backend .
+    ```
+3.  Run the container (Replace `YOUR_TOKEN` with your start.gg API key):
+    ```bash
+    docker run -p 8080:8080 -e STARTGG_API_KEY=YOUR_TOKEN fgc-backend
+    ```
+    The backend is now running at `http://localhost:8080`.
 
-Since you are using Terraform and AWS, here is the recommended architecture:
+## 2. Frontend Setup (React + Vite)
+The frontend handles the UI and uses Gemini for geocoding.
 
-### 1. Frontend (S3 + CloudFront)
+1.  In the project root, install dependencies:
+    ```bash
+    npm install
+    ```
+2.  Run the dev server with your Gemini API Key:
+    ```bash
+    # For Unix-like systems (macOS/Linux):
+    VITE_API_KEY=your_gemini_key npm run dev
 
-- **Terraform Resources:** `aws_s3_bucket`, `aws_cloudfront_distribution`.
-- **Advice:** Build the React app (`npm run build`), and use your GitHub Action to sync the `dist/` folder to S3. CloudFront provides the SSL (HTTPS).
+    # For Windows (Command Prompt):
+    set VITE_API_KEY=your_gemini_key && npm run dev
+    ```
+3.  Open your browser to the URL displayed (usually `http://localhost:5173`).
 
-### 2. Backend (AWS App Runner)
-
-- **Terraform Resources:** `aws_apprunner_service`.
-- **Advice:** App Runner is the best choice for Express APIs. It handles auto-scaling and provides a URL.
-- **Alternative:** AWS Lambda + API Gateway. Use the `serverless-http` wrapper in `index.ts` to convert Express to a Lambda handler.
-
-### 3. Secrets Management
-
-- **DO NOT** put API keys in Terraform `.tfvars`.
-- **Do:** Use `aws_secretsmanager_secret`.
-- Reference the secret ARN in your App Runner environment configuration within Terraform.
-
-### 4. CI/CD (GitHub Actions)
-
-- **Frontend Action:** Build -> Upload to S3 -> Invalidate CloudFront Cache.
-- **Backend Action:** Build Docker Image -> Push to ECR -> Update App Runner Service.
+## 🛠 Project Structure
+- `/backend`: Swift Vapor application (Logic + Proxy).
+- `/services`: Frontend API wrappers.
+- `/components`: Reusable React UI elements.
+- `App.tsx`: Main application state and layout.
