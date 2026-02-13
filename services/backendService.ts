@@ -1,10 +1,15 @@
+
 import { SearchParams, Tournament } from "../types";
 
-// Note: Ensure the Swift backend is running at this URL
-const BACKEND_URL = "http://localhost:8080";
+/**
+ * The backend URL should be set via environment variables.
+ * In development, this is usually http://localhost:8080.
+ * In production, this would be your AWS ALB or API Gateway URL (e.g., https://api.findmyfgc.com).
+ */
+const BACKEND_URL = process.env.VITE_BACKEND_URL || "http://localhost:8080";
 
 export const fetchTournaments = async (params: SearchParams): Promise<Tournament[]> => {
-  console.log("Fetching tournaments with params:", params);
+  console.log(`Fetching tournaments from: ${BACKEND_URL}/tournaments`);
   try {
     const response = await fetch(`${BACKEND_URL}/tournaments`, {
       method: 'POST',
@@ -29,12 +34,11 @@ export const fetchTournaments = async (params: SearchParams): Promise<Tournament
     const data = await response.json();
     return data as Tournament[];
   } catch (error: any) {
-    // Check if it's specifically a NetworkError (usually happens if CORS fails or backend is down)
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      console.error("NetworkError: The backend might be offline or CORS policy is blocking the request. Check if the server is running on http://localhost:8080");
+      console.error(`NetworkError: Could not reach ${BACKEND_URL}. Check if the server is running and CORS is configured for this origin.`);
     } else {
       console.error("Error fetching tournaments from backend:", error);
     }
-    throw error; // Re-throw so the UI can handle or ignore
+    throw error;
   }
 };

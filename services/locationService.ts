@@ -3,10 +3,15 @@ import { GeocodeResult } from "../types";
 
 /**
  * Geocodes a location string using the standard Google Maps Geocoding API.
- * This provides a deterministic, non-AI way to translate user input into coordinates.
  */
 export const geocodeLocation = async (query: string): Promise<GeocodeResult> => {
+  // Fix: Use process.env.API_KEY exclusively as per guidelines and resolve import.meta.env error
   const apiKey = process.env.API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("Google Maps API Key is missing. Please set API_KEY.");
+  }
+
   const encodedQuery = encodeURIComponent(query);
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&key=${apiKey}`;
 
