@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Tournament } from '../types';
 
@@ -9,7 +8,6 @@ interface MapProps {
 }
 
 const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
-  // Use 'any' to bypass Leaflet type errors because L is loaded globally from index.html
   const mapRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<any[]>([]);
@@ -17,9 +15,9 @@ const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    // @ts-ignore (L is global from index.html)
+    // @ts-ignore
     mapRef.current = L.map(containerRef.current, {
-      zoomControl: false // Move zoom control for better mobile UI
+      zoomControl: false
     }).setView(center, zoom);
 
     // @ts-ignore
@@ -30,7 +28,6 @@ const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(mapRef.current);
 
-    // Handle responsive resizing
     const resizeObserver = new ResizeObserver(() => {
       if (mapRef.current) {
         mapRef.current.invalidateSize();
@@ -53,7 +50,6 @@ const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
   useEffect(() => {
     if (mapRef.current) {
       mapRef.current.setView(center, zoom);
-      // Ensure size is correct after view changes
       mapRef.current.invalidateSize();
     }
   }, [center, zoom]);
@@ -61,12 +57,10 @@ const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Clear old markers
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
     tournaments.forEach(t => {
-      // For demo, place them slightly offset from center if exact coords aren't in payload
       const lat = center[0] + (Math.random() - 0.5) * 0.05;
       const lng = center[1] + (Math.random() - 0.5) * 0.05;
 
