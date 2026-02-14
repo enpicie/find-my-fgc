@@ -7,20 +7,20 @@ export interface Tournament {
   externalUrl: string;
   image: string;
   games: string;
-  lat?: number;
-  lng?: number;
 }
 
 export interface SearchParams {
-  lat: number;
-  lng: number;
-  radius: number; // in miles
+  query: string;
+  radius: number;
   gameIds?: number[];
 }
 
-export interface GeocodeResult {
-  lat: number;
-  lng: number;
+export interface UnifiedSearchResponse {
+  tournaments: Tournament[];
+  center: {
+    lat: number;
+    lng: number;
+  };
   displayName: string;
 }
 
