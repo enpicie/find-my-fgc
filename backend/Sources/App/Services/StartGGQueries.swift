@@ -1,6 +1,6 @@
 import Foundation
 
-enum GQLQueries {
+enum StartGGQueries {
     static let tournamentsByLocation = """
     query TournamentsByLocation($coordinates: String!, $radius: String!, $videogameIds: [ID]) {
       tournaments(query: {
