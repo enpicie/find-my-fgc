@@ -2,26 +2,77 @@
 
 A specialized gaming tournament locator for the Fighting Game Community (FGC), powered by a Swift backend proxy and a React frontend.
 
-## 💻 Local Setup Guide
+# 🔑 Obtaining API Keys
 
-### 1. Backend Setup (Swift + Docker)
+This app requires two external API keys to function:
 
-1.  Navigate to `backend` folder: `cd backend`
-2.  Build: `docker build -t fgc-backend .`
-3.  Run: `docker run -p 8080:8080 -e STARTGG_API_KEY=YOUR_TOKEN fgc-backend`
+### 1. Gemini API (for Geocoding/NLP)
 
-### 2. Frontend Setup (React + Vite)
+Used to translate queries like "the big apple" or "60601" into GPS coordinates.
 
-1.  Install: `npm install`
-2.  Run: `VITE_API_KEY=your_gemini_key npm run dev`
+- **Where to get:** [Google AI Studio](https://aistudio.google.com/)
+- **Instructions:** Sign in, click "Get API key," and create a new key.
 
-## 🛠 Project Structure
+### 2. Start.gg API (for Tournament Data)
 
-- `/terraform`: AWS Infrastructure as Code.
-- `/backend`: Swift Vapor application (Logic + Proxy).
-- `/services`: Frontend API wrappers.
-- `/components`: Reusable React UI elements.
-- `App.tsx`: Main application state and layout.
+Used to fetch event details from the world's largest tournament platform.
+
+- **Where to get:** [start.gg Developer Settings](https://start.gg/admin/profile/developer)
+- **Instructions:** Create a new "Personal Access Token."
+
+> [!IMPORTANT]
+> **Dev vs Production:** We strongly recommend generating separate keys for development and production. This ensures that a compromised dev key doesn't take down your live site and allows for cleaner usage monitoring/billing.
+
+---
+
+## 🛠 Local Development
+
+To run the application locally using Docker:
+
+### 1. Build the Backend Image
+
+Run this command from the **project root** directory:
+
+```bash
+docker build -t fgc-backend .
+```
+
+### 2. Run the Container
+
+Replace `YOUR_TOKEN` values with your actual API keys.
+
+- `STARTGG_API_KEY`: Found in your [start.gg developer settings](https://start.gg/admin/profile/developer).
+- `GEMINI_API_KEY`: Found in [Google AI Studio](https://aistudio.google.com/).
+
+```bash
+docker run -p 8080:8080 \
+  -e STARTGG_API_KEY=YOUR_STARTGG_TOKEN \
+  -e GEMINI_API_KEY=YOUR_GEMINI_TOKEN \
+  fgc-backend
+```
+
+### 3. Start the Frontend
+
+In a new terminal:
+
+```bash
+npm install
+npm run dev
+```
+
+The frontend is configured via `vite.config.ts` to proxy requests to `http://localhost:8080`.
+
+## 🏗 Directory Structure
+
+- `/frontend`: React components and hooks.
+- `/backend`: Swift/Vapor source code.
+- `/infra`: Terraform configuration.
+- `Dockerfile`: Root build file for the backend.
+
+## 📝 Troubleshooting
+
+- **Error: Unable to find image**: Ensure you ran the `docker build` command successfully first.
+- **Port 8080 already in use**: Stop any other local services running on 8080 or change the mapping to `-p 8081:8080`.
 
 ## 🧪 Testing
 
