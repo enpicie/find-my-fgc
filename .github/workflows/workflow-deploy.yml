@@ -34,7 +34,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
-          path: terraform/frontend/dist/ # matches ./dist relative to frontend tf_directory
+          path: terraform/frontend/ # artifact contains dist/, so files land at terraform/frontend/dist/
+
+      - name: Debug - List downloaded artifact contents
+        run: |
+          echo "=== terraform/frontend/ ==="
+          ls -la terraform/frontend/
+          echo "=== terraform/frontend/dist/ ==="
+          ls -la terraform/frontend/dist/ || echo "dist/ does not exist"
+          echo "=== Full tree ==="
+          find terraform/frontend -type f | sort
 
       - name: Deploy Frontend Config via Terraform
         uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
