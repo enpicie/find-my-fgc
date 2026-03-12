@@ -26,9 +26,6 @@ on:
 jobs:
   deploy-via-hcp-terraform:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
