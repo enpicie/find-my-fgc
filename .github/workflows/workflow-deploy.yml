@@ -47,7 +47,10 @@ jobs:
 
       - name: Get S3 bucket name
         id: get-bucket
-        run: echo "bucket_name=$(terraform -chdir=./terraform/frontend output -raw bucket_name)" >> $GITHUB_OUTPUT
+        run: |
+          BUCKET=$(tofu -chdir=./terraform/frontend output -raw bucket_name)
+          echo "bucket_name=$BUCKET" >> $GITHUB_OUTPUT
+          echo "[debug] bucket_name=$BUCKET"
 
       - name: Upload dist to S3
         uses: enpicie/gh-action-workflow-s3-upload@v1.0.0
