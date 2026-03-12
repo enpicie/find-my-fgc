@@ -22,6 +22,8 @@ on:
     secrets:
       AWS_ROLE_ARN_S3_CLOUDFRONT:
         required: true
+      AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN:
+        required: true
 
 jobs:
   deploy-via-hcp-terraform:
@@ -30,22 +32,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download frontend dist
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: terraform/frontend/dist/ # upload-artifact strips the dir prefix, so contents land here directly
-
-      - name: Debug - List downloaded artifact contents
-        run: |
-          echo "=== terraform/frontend/ ==="
-          ls -la terraform/frontend/
-          echo "=== terraform/frontend/dist/ ==="
-          ls -la terraform/frontend/dist/ || echo "dist/ does not exist"
-          echo "=== Full tree ==="
-          find terraform/frontend -type f | sort
-
-      - name: Deploy Frontend Config via Terraform
+      - name: Deploy Frontend Infrastructure via Terraform
         uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
         with:
           aws_role_arn: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
@@ -57,3 +44,15 @@ jobs:
             TF_VAR_deployment_env=${{ inputs.deployment_env }}
             TF_VAR_aws_region=${{ inputs.aws_region }}
             TF_VAR_domain_name=www.findmyfgc.cc
+
+      - name: Get S3 bucket name
+        id: get-bucket
+        run: echo "bucket_name=$(terraform -chdir=./terraform/frontend output -raw bucket_name)" >> $GITHUB_OUTPUT
+
+      - name: Upload dist to S3
+        uses: enpicie/gh-action-workflow-s3-upload@v1.0.0
+        with:
+          artifact_name: frontend-dist
+          bucket_name: ${{ steps.get-bucket.outputs.bucket_name }}
+          aws_region: ${{ inputs.aws_region }}
+          aws_role_arn: ${{ secrets.AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN }}

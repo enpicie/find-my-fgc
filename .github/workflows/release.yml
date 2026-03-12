@@ -52,3 +52,4 @@ jobs:
       app_version: ${{ github.sha }}
     secrets:
       AWS_ROLE_ARN_S3_CLOUDFRONT: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
+      AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN: ${{ secrets.AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN }}
