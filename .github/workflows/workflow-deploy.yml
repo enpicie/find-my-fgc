@@ -34,7 +34,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
-          path: terraform/frontend/ # artifact contains dist/, so files land at terraform/frontend/dist/
+          path: terraform/frontend/dist/ # upload-artifact strips the dir prefix, so contents land here directly
 
       - name: Debug - List downloaded artifact contents
         run: |
