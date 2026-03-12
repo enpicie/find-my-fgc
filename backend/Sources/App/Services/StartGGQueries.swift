@@ -20,6 +20,8 @@ enum StartGGQueries {
           city
           addrState
           venueAddress
+          lat
+          lng
           startAt
           hasOnlineEvents
           url

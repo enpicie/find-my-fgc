@@ -29,6 +29,8 @@ struct TournamentNode: Content {
     let city: String?
     let addrState: String?
     let venueAddress: String?
+    let lat: Double?
+    let lng: Double?
     let startAt: Int
     let url: String
     let images: [StartGGImage]?
