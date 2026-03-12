@@ -25,7 +25,10 @@ struct GeminiRequest: Content {
 struct GeminiGeocodeResponse: Content {
     struct Candidate: Content {
         struct ContentPart: Content {
-            let text: String
+            struct Part: Content {
+                let text: String
+            }
+            let parts: [Part]
         }
         let content: ContentPart
     }

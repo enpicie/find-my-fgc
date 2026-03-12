@@ -33,7 +33,7 @@ export const useTournaments = () => {
       setCenter([response.center.lat, response.center.lng]);
       setLocationName(response.displayName);
       
-      const sorted = response.tournaments.sort((a, b) => parseInt(a.date) - parseInt(b.date));
+      const sorted = [...response.tournaments].sort((a, b) => parseInt(a.date) - parseInt(b.date));
       setTournaments(sorted);
       
       if (window.innerWidth < 768) {
@@ -41,8 +41,8 @@ export const useTournaments = () => {
           document.getElementById('results-heading')?.scrollIntoView({ behavior: 'smooth' });
         }, 150);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to find tournaments.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to find tournaments.");
       setTournaments([]);
     } finally {
       setLoading(false);

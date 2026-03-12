@@ -11,7 +11,9 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
 
   return (
     <div className="border border-slate-700/50 rounded-xl overflow-hidden bg-slate-900/20">
-      <button 
+      <button
+        type="button"
+        aria-expanded={isExpanded}
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-3 text-sm font-medium text-slate-400 hover:bg-slate-700/30 transition-colors"
       >
@@ -41,6 +43,7 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
                 const isSelected = selectedGameIds.includes(game.id);
                 return (
                   <button
+                    type="button"
                     key={game.id}
                     onClick={() => toggleGameId(game.id)}
                     className={`relative flex flex-col items-center p-2 rounded-xl border-2 transition-all group ${
@@ -78,12 +81,6 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
           </div>
         </div>
       )}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .game-filter-scroll::-webkit-scrollbar { width: 4px; }
-        .game-filter-scroll::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.5); border-radius: 10px; }
-        .game-filter-scroll::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 10px; }
-        .game-filter-scroll::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.8); }
-      `}} />
     </div>
   );
 };

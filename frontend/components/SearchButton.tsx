@@ -8,6 +8,7 @@ interface SearchButtonProps {
 
 const SearchButton: React.FC<SearchButtonProps> = ({ onClick, disabled, loading }) => (
   <button
+    type="button"
     onClick={onClick}
     disabled={disabled}
     className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all ${

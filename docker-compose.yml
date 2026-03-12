@@ -1,0 +1,32 @@
+# Full local stack: Vapor backend + React frontend (static, served by nginx)
+# Reads from .env automatically. Copy .env.example -> .env first.
+#
+# Usage:
+#   make dev          — build and run full stack
+#   make down         — tear down
+#   make logs         — follow logs
+
+services:
+  backend:
+    image: find-my-fgc-backend
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    command: ["serve", "--env", "development"]
+    environment:
+      - STARTGG_API_KEY=${STARTGG_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LOG_LEVEL=debug
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        GEMINI_API_KEY: ${GEMINI_API_KEY}
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8080}
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

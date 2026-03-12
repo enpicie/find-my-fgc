@@ -1,45 +1,80 @@
 import Vapor
 
-let app = try await Application.make()
-defer { app.shutdown() }
+// .detect() reads --env from CLI args, so CMD ["serve", "--env", "production", ...]
+// in the Dockerfile correctly sets production mode at container startup.
+// LoggingSystem.bootstrap must be called before Application.make so that
+// LOG_LEVEL env var is respected by all loggers.
+var env = try Environment.detect()
+try LoggingSystem.bootstrap(from: &env)
+let app = try await Application.make(env)
 
 // MARK: - Server Configuration
 app.http.server.configuration.hostname = "0.0.0.0"
 app.http.server.configuration.port = 8080
 
+// MARK: - HTTP Client Configuration
+// Prevents hung requests to Gemini / start.gg from blocking event loop threads.
+app.http.client.configuration.timeout = .init(connect: .seconds(5), read: .seconds(15))
+
 // MARK: - Middleware
+// ALLOWED_ORIGIN should be set to your CloudFront domain in production.
+// Falls back to .all when unset (local dev / docker-compose).
+let allowedOrigin: CORSMiddleware.AllowOriginSetting = Environment.get("ALLOWED_ORIGIN")
+    .map { .custom($0) } ?? .all
+
 let corsConfiguration = CORSMiddleware.Configuration(
-    allowedOrigin: .all,
+    allowedOrigin: allowedOrigin,
     allowedMethods: [.GET, .POST, .OPTIONS],
     allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith]
 )
 app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
 
+// MARK: - Startup Validation
+// Read once so misconfiguration fails immediately at boot, not at first request.
+guard let startGGKey = Environment.get("STARTGG_API_KEY"),
+      let geminiKey = Environment.get("GEMINI_API_KEY") else {
+    app.logger.critical("Required environment variables STARTGG_API_KEY and GEMINI_API_KEY must be set.")
+    exit(1)
+}
+
 // MARK: - Routes
+
+// Health check — targeted by ECS container agent and ALB target group.
+app.get("health") { _ in HTTPStatus.ok }
+
 app.post("tournaments") { req -> UnifiedResponse in
-    let search = try req.content.decode(TournamentRequest.self)
-    
-    guard let startGGKey = Environment.get("STARTGG_API_KEY"),
-          let geminiKey = Environment.get("GEMINI_API_KEY") else {
-        throw Abort(.internalServerError, reason: "Server configuration error: API keys are missing.")
+    let rawBody = req.body.string ?? "(empty)"
+    req.logger.debug("POST /tournaments raw body", metadata: ["body": "\(rawBody)"])
+
+    let search: TournamentRequest
+    do {
+        search = try req.content.decode(TournamentRequest.self)
+    } catch {
+        req.logger.error("Request decode failed", metadata: ["error": "\(error)", "body": "\(rawBody)"])
+        throw error
     }
-    
-    // 1. NLP Geocoding Mode: Resolve user query to coordinates
+
+    req.logger.info("POST /tournaments", metadata: [
+        "query": "\(search.query)", "radius": "\(search.radius)", "gameIds": "\(search.gameIds ?? [])"
+    ])
+
     let location = try await NLPService.geocode(
-        query: search.query, 
-        client: req.client, 
-        apiKey: geminiKey
+        query: search.query,
+        client: req.client,
+        apiKey: geminiKey,
+        logger: req.logger
     )
-    
-    // 2. Fetch Tournament Data: Query start.gg using resolved coordinates
+
     let tournaments = try await TournamentService.fetchTournaments(
         location: location,
         radius: search.radius,
         gameIds: search.gameIds,
         client: req.client,
-        apiKey: startGGKey
+        apiKey: startGGKey,
+        logger: req.logger
     )
-    
+
+    req.logger.info("POST /tournaments complete", metadata: ["tournamentCount": "\(tournaments.count)"])
     return UnifiedResponse(
         tournaments: tournaments,
         center: LocationCoord(lat: location.lat, lng: location.lng),
@@ -47,4 +82,10 @@ app.post("tournaments") { req -> UnifiedResponse in
     )
 }
 
-try await app.execute()
+do {
+    try await app.execute()
+} catch {
+    try await app.asyncShutdown()
+    throw error
+}
+try await app.asyncShutdown()

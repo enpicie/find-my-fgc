@@ -7,8 +7,9 @@ interface LocationInputProps {
 
 const LocationInput: React.FC<LocationInputProps> = ({ value, onChange }) => (
   <div>
-    <label className="block text-sm font-medium text-slate-400 mb-1">Your Location</label>
+    <label htmlFor="location-input" className="block text-sm font-medium text-slate-400 mb-1">Your Location</label>
     <input
+      id="location-input"
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}

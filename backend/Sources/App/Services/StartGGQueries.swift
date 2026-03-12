@@ -10,7 +10,7 @@ enum StartGGQueries {
             distance: $radius
           },
           videogameIds: $videogameIds,
-          hasOfflineEvents: true,
+          hasOnlineEvents: false,
           upcoming: true
         }
       }) {
@@ -21,12 +21,13 @@ enum StartGGQueries {
           addrState
           venueAddress
           startAt
+          hasOnlineEvents
           url
           images {
             type
             url
           }
-          events(filter: { videogameId: $videogameIds }) {
+          events {
             id
             name
             videogame {

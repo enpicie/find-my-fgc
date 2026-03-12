@@ -8,8 +8,3 @@ export const formatDate = (unixTimestamp: string): string => {
   });
 };
 
-export const formatList = (items: string | undefined): string => {
-  if (!items) return '';
-  const list = items.split(', ');
-  return list.slice(0, 3).join(', ') + (list.length > 3 ? '...' : '');
-};
