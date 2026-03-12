@@ -46,3 +46,5 @@ jobs:
           tf_vars: |
             TF_VAR_app_name=${{ inputs.app_name }}-frontend
             TF_VAR_deployment_env=${{ inputs.deployment_env }}
+            TF_VAR_aws_region=${{ inputs.aws_region }}
+            TF_VAR_domain_name=www.findmyfgc.cc
