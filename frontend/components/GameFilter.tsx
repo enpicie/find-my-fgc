@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { POPULAR_GAMES } from '../types';
+import { POPULAR_GAMES } from '../constants/games';
 
 interface GameFilterProps {
   selectedGameIds: number[];
@@ -25,10 +25,10 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
             </span>
           )}
         </div>
-        <svg 
-          className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} 
-          fill="none" 
-          stroke="currentColor" 
+        <svg
+          className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -53,9 +53,9 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
                     }`}
                   >
                     <div className="h-10 w-full flex items-center justify-center mb-1.5 overflow-hidden">
-                      <img 
-                        src={game.imageUrl} 
-                        alt={game.name} 
+                      <img
+                        src={game.imageUrl}
+                        alt={game.name}
                         className={`max-h-full max-w-full object-contain transition-transform duration-300 ${
                           isSelected ? 'scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'opacity-70 group-hover:opacity-100'
                         }`}
@@ -66,7 +66,7 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
                     }`}>
                       {game.name}
                     </span>
-                    
+
                     {isSelected && (
                       <div className="absolute -top-1 -right-1 bg-indigo-500 text-white rounded-full p-0.5 shadow-lg z-10">
                         <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
