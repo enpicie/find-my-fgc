@@ -37,7 +37,7 @@ jobs:
           path: terraform/frontend/dist/ # matches ./dist relative to frontend tf_directory
 
       - name: Deploy Frontend Config via Terraform
-        uses: enpicie/gh-action-workflow-terraform-run@v0.3.1
+        uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
         with:
           aws_role_arn: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
           state_key: projects/${{ inputs.app_name }}/${{ inputs.deployment_env }}/frontend.tfstate
