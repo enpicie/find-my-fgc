@@ -1,0 +1,50 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - terraform
+  workflow_dispatch:
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.vars.outputs.app_name }}
+      aws_region: ${{ steps.vars.outputs.aws_region }}
+      ecr_repository: ${{ steps.vars.outputs.ecr_repository }}
+      deployment_env: ${{ steps.vars.outputs.deployment_env }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load deployment config
+        id: vars
+        run: |
+          source .github/deployment.env
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "aws_region=$AWS_REGION" >> $GITHUB_OUTPUT
+          echo "ecr_repository=$ECR_REPOSITORY" >> $GITHUB_OUTPUT
+          echo "deployment_env=$DEPLOYMENT_ENV" >> $GITHUB_OUTPUT
+
+  build:
+    needs: config
+    uses: ./.github/workflows/workflow-build.yml
+    with:
+      aws_region: ${{ needs.config.outputs.aws_region }}
+      app_name: ${{ needs.config.outputs.app_name }}
+      image_tag: ${{ github.sha }}
+      ecr_repository: ${{ needs.config.outputs.ecr_repository }}
+    secrets:
+      BACKEND_URL: ${{ secrets.BACKEND_URL }}
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+
+  deploy:
+    needs: [config, build]
+    uses: ./.github/workflows/workflow-deploy.yml
+    with:
+      aws_region: ${{ needs.config.outputs.aws_region }}
+      app_name: ${{ needs.config.outputs.app_name }}
+      deployment_env: ${{ needs.config.outputs.deployment_env }}
+      app_version: ${{ github.sha }}
+    secrets:
+      AWS_ROLE_ARN_S3_CLOUDFRONT: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}

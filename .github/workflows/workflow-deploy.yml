@@ -1,0 +1,48 @@
+name: 'Deploy Infrastructure via Terraform'
+
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        description: AWS Region to deploy to
+        required: true
+        type: string
+      app_name:
+        description: Name of the application
+        required: true
+        type: string
+      deployment_env:
+        description: Environment to deploy to (e.g., dev, prod)
+        required: true
+        type: string
+      app_version:
+        description: Version of the application
+        required: false
+        type: string
+    secrets:
+      AWS_ROLE_ARN_S3_CLOUDFRONT:
+        required: true
+
+jobs:
+  deploy-via-hcp-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download frontend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: terraform/frontend/dist/ # matches ./dist relative to frontend tf_directory
+
+      - name: Deploy Frontend Config via Terraform
+        uses: enpicie/gh-action-workflow-terraform-run@v0.3.1
+        with:
+          aws_role_arn: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
+          state_key: projects/${{ inputs.app_name }}/${{ inputs.deployment_env }}/frontend.tfstate
+          aws_region: ${{ inputs.aws_region }}
+          tf_directory: ./terraform/frontend
+          tf_vars: |
+            TF_VAR_app_name=${{ inputs.app_name }}-frontend
+            TF_VAR_deployment_env=${{ inputs.deployment_env }}
