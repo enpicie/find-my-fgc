@@ -63,6 +63,8 @@ struct TournamentService {
                 name: node.name,
                 location: locStr,
                 venueAddress: node.venueAddress ?? "See Details",
+                lat: node.lat,
+                lng: node.lng,
                 date: "\(node.startAt)",
                 externalUrl: "https://start.gg\(node.url)",
                 image: image,

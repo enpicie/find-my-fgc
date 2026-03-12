@@ -61,8 +61,9 @@ const Map: React.FC<MapProps> = ({ center, zoom, tournaments }) => {
     markersRef.current = [];
 
     tournaments.forEach(t => {
-      const lat = center[0] + (Math.random() - 0.5) * 0.05;
-      const lng = center[1] + (Math.random() - 0.5) * 0.05;
+      if (!t.lat || !t.lng) return;
+      const lat = t.lat;
+      const lng = t.lng;
 
       // @ts-ignore
       const marker = L.marker([lat, lng])

@@ -1,0 +1,34 @@
+name: 'Bootstrap Shared Infrastructure via Terraform'
+
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        description: AWS Region to deploy to
+        required: true
+        type: string
+      app_name:
+        description: Name of the application
+        required: true
+        type: string
+    secrets:
+      AWS_ROLE_ARN_ECR:
+        required: true
+
+jobs:
+  bootstrap-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Shared Infrastructure via Terraform
+        uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
+        with:
+          aws_role_arn: ${{ secrets.AWS_ROLE_ARN_ECR }}
+          state_key: projects/${{ inputs.app_name }}/infra.tfstate
+          aws_region: ${{ inputs.aws_region }}
+          tf_directory: ./terraform/infra
+          tf_vars: |
+            TF_VAR_app_name=${{ inputs.app_name }}
+            TF_VAR_aws_region=${{ inputs.aws_region }}

@@ -1,0 +1,61 @@
+name: 'Deploy Infrastructure via Terraform'
+
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        description: AWS Region to deploy to
+        required: true
+        type: string
+      app_name:
+        description: Name of the application
+        required: true
+        type: string
+      deployment_env:
+        description: Environment to deploy to (e.g., dev, prod)
+        required: true
+        type: string
+      app_version:
+        description: Version of the application
+        required: false
+        type: string
+    secrets:
+      AWS_ROLE_ARN_S3_CLOUDFRONT:
+        required: true
+      AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN:
+        required: true
+
+jobs:
+  deploy-via-hcp-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Frontend Infrastructure via Terraform
+        uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
+        with:
+          aws_role_arn: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
+          state_key: projects/${{ inputs.app_name }}/${{ inputs.deployment_env }}/frontend.tfstate
+          aws_region: ${{ inputs.aws_region }}
+          tf_directory: ./terraform/frontend
+          tf_vars: |
+            TF_VAR_app_name=${{ inputs.app_name }}-frontend
+            TF_VAR_deployment_env=${{ inputs.deployment_env }}
+            TF_VAR_aws_region=${{ inputs.aws_region }}
+            TF_VAR_domain_name=www.findmyfgc.cc
+
+      - name: Get S3 bucket name
+        id: get-bucket
+        run: |
+          BUCKET=$(tofu -chdir=./terraform/frontend output -raw bucket_name)
+          echo "bucket_name=$BUCKET" >> $GITHUB_OUTPUT
+          echo "[debug] bucket_name=$BUCKET"
+
+      - name: Upload dist to S3
+        uses: enpicie/gh-action-workflow-s3-upload@v1.0.0
+        with:
+          artifact_name: frontend-dist
+          bucket_name: ${{ steps.get-bucket.outputs.bucket_name }}
+          aws_region: ${{ inputs.aws_region }}
+          aws_role_arn: ${{ secrets.AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN }}

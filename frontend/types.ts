@@ -3,6 +3,8 @@ export interface Tournament {
   name: string;
   location: string;
   venueAddress: string;
+  lat: number | null;
+  lng: number | null;
   date: string;
   externalUrl: string;
   image: string;

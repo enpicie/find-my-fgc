@@ -1,0 +1,32 @@
+name: Bootstrap Pipeline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.vars.outputs.app_name }}
+      aws_region: ${{ steps.vars.outputs.aws_region }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load deployment config
+        id: vars
+        run: |
+          source .github/deployment.env
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "aws_region=$AWS_REGION" >> $GITHUB_OUTPUT
+
+  bootstrap:
+    needs: config
+    uses: ./.github/workflows/workflow-bootstrap.yml
+    with:
+      aws_region: ${{ needs.config.outputs.aws_region }}
+      app_name: ${{ needs.config.outputs.app_name }}
+    secrets:
+      AWS_ROLE_ARN_ECR: ${{ secrets.AWS_ROLE_ARN_ECR }}

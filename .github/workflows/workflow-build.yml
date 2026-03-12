@@ -1,0 +1,73 @@
+name: 'Build Frontend and Backend'
+
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        required: true
+        type: string
+      app_name:
+        required: true
+        type: string
+      image_tag:
+        description: Docker image tag (typically git SHA)
+        required: true
+        type: string
+      ecr_repository:
+        required: true
+        type: string
+    secrets:
+      BACKEND_URL:
+        required: true
+      AWS_ROLE_ARN:
+        required: true
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+          retention-days: 1
+
+  # build-backend:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+  #         aws-region: ${{ inputs.aws_region }}
+
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v2
+
+  #     - name: Build and push backend image
+  #       env:
+  #         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         REPOSITORY: ${{ inputs.ecr_repository }}
+  #         IMAGE_TAG: ${{ inputs.image_tag }}
+  #       run: |
+  #         docker build -f backend/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./backend
+  #         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

@@ -11,6 +11,8 @@ struct TournamentOutput: Content {
     let name: String
     let location: String
     let venueAddress: String
+    let lat: Double?
+    let lng: Double?
     let date: String
     let externalUrl: String
     let image: String

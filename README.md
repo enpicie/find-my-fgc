@@ -27,47 +27,18 @@ Used to fetch event details from the world's largest tournament platform.
 
 ## 🛠 Local Development
 
-To run the application locally using Docker:
+Use [Makefile](./Makefile) targets to build and run this app locally:
 
-### 1. Build the Backend Image
-
-Run this command from the **project root** directory:
-
-```bash
-docker build -t fgc-backend .
-```
-
-### 2. Run the Container
-
-Replace `YOUR_TOKEN` values with your actual API keys.
-
-- `STARTGG_API_KEY`: Found in your [start.gg developer settings](https://start.gg/admin/profile/developer).
-- `GEMINI_API_KEY`: Found in [Google AI Studio](https://aistudio.google.com/).
-
-```bash
-docker run -p 8080:8080 \
-  -e STARTGG_API_KEY=YOUR_STARTGG_TOKEN \
-  -e GEMINI_API_KEY=YOUR_GEMINI_TOKEN \
-  fgc-backend
-```
-
-### 3. Start the Frontend
-
-In a new terminal:
-
-```bash
-npm install
-npm run dev
-```
-
-The frontend is configured via `vite.config.ts` to proxy requests to `http://localhost:8080`.
+- `make frontend-dev` - Builds Vite React frontend with hot reload and starts serving app locally
+- `make backend-dev` - Builds backend image and starts Docker container
+  - Requires Docker Desktop to be running
+- backend-dev-clean - Fully rebuilds backend from scratch (bypasses all caches)
 
 ## 🏗 Directory Structure
 
 - `/frontend`: React components and hooks.
 - `/backend`: Swift/Vapor source code.
-- `/infra`: Terraform configuration.
-- `Dockerfile`: Root build file for the backend.
+- `/terraform`: Terraform configuration.
 
 ## 📝 Troubleshooting
 

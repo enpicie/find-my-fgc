@@ -3,6 +3,7 @@ import SearchPanel from './components/SearchPanel';
 import TournamentCard from './components/TournamentCard';
 import Map from './components/Map';
 import { useTournaments } from './hooks/useTournaments';
+import logo from '@/assets/findmyfgclogo.png';
 
 const App: React.FC = () => {
   const {
@@ -18,7 +19,7 @@ const App: React.FC = () => {
     <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden bg-slate-950 font-sans">
       <header className="bg-slate-900 border-b border-slate-800 p-4 shrink-0 flex items-center justify-between z-40 sticky top-0 md:relative">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-600 p-1.5 rounded-lg text-white font-bold text-lg leading-none">FG</div>
+          <img src={logo} alt="FindMyFGC" className="p-1.5 rounded-lg" style={{ height: '3.25rem', width: '3.25rem' }} />
           <div>
             <h1 className="text-lg md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">
               FindMyFGC
