@@ -24,7 +24,7 @@ const App: React.FC = () => {
               FindMyFGC
             </h1>
             <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1 uppercase">
-              Secure Cloud Mode
+              This site does not store or use your data whatsoever.
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
       <main className="flex flex-col md:flex-row flex-grow min-h-0 relative">
         <aside className="w-full md:w-96 flex flex-col border-r border-slate-800 bg-slate-900 md:overflow-y-auto p-4 md:p-6 gap-6 shrink-0 z-20 shadow-2xl order-2 md:order-1">
-          <SearchPanel 
+          <SearchPanel
             location={query}
             setLocation={setQuery}
             radius={radius}
@@ -53,7 +53,7 @@ const App: React.FC = () => {
             <div id="results-heading" className="flex justify-between items-center scroll-mt-20">
               <h2 className="text-lg font-bold text-slate-300">Events ({tournaments.length})</h2>
             </div>
-            
+
             {tournaments.length === 0 && !loading && (
               <div className="bg-slate-800/50 border border-dashed border-slate-700 rounded-lg p-8 text-center flex flex-col items-center">
                 <div className="text-3xl mb-3 opacity-30">📍</div>
@@ -73,7 +73,7 @@ const App: React.FC = () => {
           </section>
         </aside>
 
-        <section className="h-[300px] md:h-full w-full md:flex-grow relative z-10 order-1 md:order-2 border-b md:border-b-0 border-slate-800 shrink-0">
+        <section className="h-[300px] md:h-full w-full md:flex-grow relative z-10 order-1 md:order-2 border-b md:border-b-0 border-slate-800 shrink-0 md:p-4">
           <div className="absolute top-3 left-3 z-[1000] bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-full shadow-lg text-[10px] md:text-xs font-bold text-indigo-300 flex items-center gap-2 pointer-events-none">
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
             {locationName}
