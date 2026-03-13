@@ -2,8 +2,8 @@ name: Release Pipeline
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -38,7 +38,7 @@ jobs:
     with:
       aws_region: ${{ needs.config.outputs.aws_region }}
       app_name: ${{ needs.config.outputs.app_name }}
-      image_tag: ${{ github.sha }}
+      image_tag: ${{ github.ref_name }}
       ecr_repository: ${{ needs.config.outputs.ecr_repository }}
     secrets:
       BACKEND_URL: ${{ secrets.BACKEND_URL }}
