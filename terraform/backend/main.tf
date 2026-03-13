@@ -58,6 +58,17 @@ module "service" {
   # so they don't need a public IP for outbound traffic (ECR pulls, etc.).
   assign_public_ip = false
 
+  secrets = [
+    {
+      name      = "STARTGG_API_KEY"
+      valueFrom = data.terraform_remote_state.aws_infra.outputs.startgg_api_key_secret_arn
+    },
+    {
+      name      = "GEMINI_API_KEY"
+      valueFrom = data.terraform_remote_state.aws_infra.outputs.gemini_api_key_secret_arn
+    }
+  ]
+
   tags = {
     Project     = var.app_name
     Environment = var.deployment_env

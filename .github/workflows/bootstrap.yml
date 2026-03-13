@@ -30,3 +30,5 @@ jobs:
       app_name: ${{ needs.config.outputs.app_name }}
     secrets:
       AWS_ROLE_ARN_ECR: ${{ secrets.AWS_ROLE_ARN_ECR }}
+      STARTGG_API_KEY: ${{ secrets.STARTGG_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
