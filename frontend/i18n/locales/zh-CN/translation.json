@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "本网站不收集您的数据。",
+    "support": "支持"
+  },
+  "search": {
+    "heading": "搜索赛事",
+    "faq": "常见问题"
+  },
+  "location": {
+    "label": "您的位置",
+    "placeholder": "邮编、城市或省份..."
+  },
+  "radius": {
+    "label": "搜索范围：{{value}} 英里"
+  },
+  "games": {
+    "filterLabel": "按游戏筛选"
+  },
+  "button": {
+    "scanning": "搜索中...",
+    "locate": "查找赛事"
+  },
+  "results": {
+    "heading": "赛事 ({{count}})",
+    "empty": "请搜索一个位置。",
+    "notFinding": "找不到您游戏的赛事？→"
+  },
+  "card": {
+    "games": "游戏：{{games}}",
+    "details": "详情"
+  },
+  "map": {
+    "viewOnStartGG": "在 start.gg 上查看"
+  },
+  "faq": {
+    "back": "返回",
+    "noteFrom": "enpicie 的备注"
+  }
+}

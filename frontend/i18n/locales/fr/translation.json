@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "Ce site ne collecte pas vos données.",
+    "support": "Soutenir"
+  },
+  "search": {
+    "heading": "Chercher des Tournois",
+    "faq": "FAQ"
+  },
+  "location": {
+    "label": "Votre Localisation",
+    "placeholder": "Code postal, Ville ou Région..."
+  },
+  "radius": {
+    "label": "Rayon de recherche : {{value}} miles"
+  },
+  "games": {
+    "filterLabel": "Filtrer par Jeux"
+  },
+  "button": {
+    "scanning": "Recherche...",
+    "locate": "Localiser les Tournois"
+  },
+  "results": {
+    "heading": "Événements ({{count}})",
+    "empty": "Recherchez une localisation.",
+    "notFinding": "Pas d'événements pour votre jeu ? →"
+  },
+  "card": {
+    "games": "Jeux : {{games}}",
+    "details": "Détails"
+  },
+  "map": {
+    "viewOnStartGG": "Voir sur start.gg"
+  },
+  "faq": {
+    "back": "Retour",
+    "noteFrom": "Note d'enpicie"
+  }
+}

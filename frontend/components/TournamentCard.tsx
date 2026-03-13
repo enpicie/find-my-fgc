@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tournament } from '../types';
 import { formatDate } from '../utils/formatters';
 
@@ -7,6 +8,7 @@ interface TournamentCardProps {
 }
 
 const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden flex flex-col sm:flex-row gap-4 hover:border-indigo-500/50 transition-colors group">
       <div className="w-full sm:w-32 h-32 flex-shrink-0 relative bg-slate-900">
@@ -23,13 +25,13 @@ const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) => {
           <p className="text-sm text-slate-400 line-clamp-1">{tournament.location}</p>
           {tournament.games && (
             <p className="text-xs text-indigo-400/80 mt-1 font-semibold line-clamp-1">
-              Games: {tournament.games}
+              {t('card.games', { games: tournament.games })}
             </p>
           )}
           <p className="text-xs text-slate-500 line-clamp-1 italic mt-1">{tournament.venueAddress}</p>
         </div>
         <div className="mt-4 flex justify-end">
-          <a href={tournament.externalUrl} target="_blank" rel="noopener noreferrer" className="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded transition-colors">Details</a>
+          <a href={tournament.externalUrl} target="_blank" rel="noopener noreferrer" className="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded transition-colors">{t('card.details')}</a>
         </div>
       </div>
     </div>
