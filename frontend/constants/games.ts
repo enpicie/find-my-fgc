@@ -40,17 +40,17 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: cotwLogo
     },
     {
-        id: 48999,
+        id: 48548,
         name: "GBVSR",
         imageUrl: gbvsrLogo
     },
     {
-        id: 50926,
+        id: 50203,
         name: "UNI2",
         imageUrl: uni2Logo
     },
     {
-        id: 35061,
+        id: 36865,
         name: "MBTL",
         imageUrl: mbtlLogo
     },
@@ -70,7 +70,7 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: xrdLogo
     },
     {
-        id: 12,
+        id: 32,
         name: "Skullgirls",
         imageUrl: skugsLogo
     }
