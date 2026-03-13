@@ -38,7 +38,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
       </div>
       <div className="mt-auto text-[10px] text-slate-500 border-t border-slate-700 pt-4 flex justify-between items-center">
         <span>{process.env.VITE_APP_VERSION}</span>
-        {/* <span className="font-mono opacity-50 uppercase tracking-widest italic">Start.gg Hybrid Engine</span> */}
+        <a href="#faq" className="hover:text-indigo-400 transition-colors uppercase tracking-widest font-mono font-bold text-slate-400">FAQ</a>
       </div>
     </div>
   );
