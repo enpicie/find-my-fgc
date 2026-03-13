@@ -11,7 +11,14 @@ import xrdLogo from "@/assets/games/xrd-logo.png";
 import skugsLogo from "@/assets/games/skugs-logo.png";
 import mbtlLogo from "@/assets/games/mbtl-logo.png";
 import mbaaccLogo from "@/assets/games/mbaacc-logo.png";
-
+import kofxvLogo from "@/assets/games/kofxv-logo.png";
+import mk1Logo from "@/assets/games/mk1-logo.png";
+import vf5Logo from "@/assets/games/vf5-logo.png";
+import vsavLogo from "@/assets/games/vsav-logo.png";
+import mvc3Logo from "@/assets/games/mvc3-logo.png";
+import dbfzLogo from "@/assets/games/dbfz-logo.png";
+import ssbuLogo from "@/assets/games/ssbu-logo.png";
+import ssbmLogo from "@/assets/games/ssbm-logo.png";
 
 export const POPULAR_GAMES: GameOption[] = [
     {
@@ -40,9 +47,24 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: cotwLogo
     },
     {
+        id: 36963,
+        name: "KOFXV",
+        imageUrl: kofxvLogo
+    },
+    {
         id: 48548,
         name: "GBVSR",
         imageUrl: gbvsrLogo
+    },
+    {
+        id: 48599,
+        name: "MK1",
+        imageUrl: mk1Logo
+    },
+    {
+        id: 114237,
+        name: "VF5 REVO",
+        imageUrl: vf5Logo
     },
     {
         id: 50203,
@@ -70,8 +92,33 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: xrdLogo
     },
     {
+        id: 582,
+        name: "VSAV",
+        imageUrl: vsavLogo
+    },
+    {
         id: 32,
         name: "Skullgirls",
         imageUrl: skugsLogo
+    },
+    {
+        id: 18,
+        name: "UMVC3",
+        imageUrl: mvc3Logo
+    },
+    {
+        id: 287,
+        name: "DBFZ",
+        imageUrl: dbfzLogo
+    },
+    {
+        id: 1386,
+        name: "SSBU",
+        imageUrl: ssbuLogo
+    },
+    {
+        id: 1,
+        name: "SSBM",
+        imageUrl: ssbmLogo
     }
 ];
