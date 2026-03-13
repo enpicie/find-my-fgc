@@ -19,10 +19,16 @@ on:
         description: Version of the application
         required: false
         type: string
+      backend_image:
+        description: Full ECR image URI for the backend (e.g. 123456789.dkr.ecr.us-east-2.amazonaws.com/find-my-fgc/backend:abc1234)
+        required: true
+        type: string
     secrets:
       AWS_ROLE_ARN_S3_CLOUDFRONT:
         required: true
       AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN:
+        required: true
+      AWS_ROLE_ARN_ECS_ALB:
         required: true
 
 jobs:
@@ -32,7 +38,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Deploy Frontend Infrastructure via Terraform
+      - name: Deploy Frontend Infrastructure via Terraform (www.findmyfgc.cc)
         uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
         with:
           aws_role_arn: ${{ secrets.AWS_ROLE_ARN_S3_CLOUDFRONT }}
@@ -59,3 +65,17 @@ jobs:
           bucket_name: ${{ steps.get-bucket.outputs.bucket_name }}
           aws_region: ${{ inputs.aws_region }}
           aws_role_arn: ${{ secrets.AWS_S3_ARTIFACT_UPLOAD_ROLE_ARN }}
+
+      - name: Deploy Backend Infrastructure via Terraform (api.findmyfgc.cc)
+        uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
+        with:
+          aws_role_arn: ${{ secrets.AWS_ROLE_ARN_ECS_ALB }}
+          state_key: projects/${{ inputs.app_name }}/${{ inputs.deployment_env }}/backend.tfstate
+          aws_region: ${{ inputs.aws_region }}
+          tf_directory: ./terraform/backend
+          tf_vars: |
+            TF_VAR_app_name=${{ inputs.app_name }}-backend
+            TF_VAR_deployment_env=${{ inputs.deployment_env }}
+            TF_VAR_aws_region=${{ inputs.aws_region }}
+            TF_VAR_image=${{ inputs.backend_image }}
+            TF_VAR_domain_name=api.findmyfgc.cc

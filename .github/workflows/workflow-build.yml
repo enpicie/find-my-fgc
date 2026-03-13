@@ -16,6 +16,10 @@ on:
       ecr_repository:
         required: true
         type: string
+    outputs:
+      image_uri:
+        description: Full ECR image URI with tag (passed to backend terraform deploy)
+        value: ${{ jobs.build-backend.outputs.image_uri }}
     secrets:
       BACKEND_URL:
         required: true
@@ -48,26 +52,30 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # build-backend:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+  build-backend:
+    runs-on: ubuntu-latest
+    outputs:
+      image_uri: ${{ steps.build-push.outputs.image_uri }}
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-  #         aws-region: ${{ inputs.aws_region }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ inputs.aws_region }}
 
-  #     - name: Login to Amazon ECR
-  #       id: login-ecr
-  #       uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-  #     - name: Build and push backend image
-  #       env:
-  #         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-  #         REPOSITORY: ${{ inputs.ecr_repository }}
-  #         IMAGE_TAG: ${{ inputs.image_tag }}
-  #       run: |
-  #         docker build -f backend/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./backend
-  #         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: Build and push backend image
+        id: build-push
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ inputs.ecr_repository }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          docker build -f backend/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./backend
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "image_uri=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
