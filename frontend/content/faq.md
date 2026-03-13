@@ -30,4 +30,4 @@ FindMyFGC was built by [@enpicie](https://x.com/enpicie). If you find it useful,
 
 ## How do I report a bug or request a feature?
 
-Reach out on [X (Twitter)](https://x.com/enpicie) or _@enpicie_ on Discord. Bug reports and feature ideas are always welcome.
+Reach out on [X (Twitter)](https://x.com/enpicie) or message _@enpicie_ on Discord. Bug reports and feature ideas are always welcome. I will get to them as I am able.
