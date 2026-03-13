@@ -8,14 +8,14 @@ resource "aws_secretsmanager_secret_version" "startgg_api_key" {
   secret_string = var.startgg_api_key
 }
 
-resource "aws_secretsmanager_secret" "gemini_api_key" {
-  name        = "${var.app_name}/GEMINI_API_KEY"
-  description = "Google Gemini API key for the backend service"
+resource "aws_secretsmanager_secret" "google_maps_api_key" {
+  name        = "${var.app_name}/GOOGLE_MAPS_API_KEY"
+  description = "Google Maps API key for the backend service"
 }
 
-resource "aws_secretsmanager_secret_version" "gemini_api_key" {
-  secret_id     = aws_secretsmanager_secret.gemini_api_key.id
-  secret_string = var.gemini_api_key
+resource "aws_secretsmanager_secret_version" "google_maps_api_key" {
+  secret_id     = aws_secretsmanager_secret.google_maps_api_key.id
+  secret_string = var.google_maps_api_key
 }
 
 

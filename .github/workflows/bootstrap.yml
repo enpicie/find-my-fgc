@@ -31,4 +31,4 @@ jobs:
     secrets:
       AWS_ROLE_ARN_ECR: ${{ secrets.AWS_ROLE_ARN_ECR }}
       STARTGG_API_KEY: ${{ secrets.STARTGG_API_KEY }}
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}

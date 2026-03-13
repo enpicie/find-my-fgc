@@ -17,7 +17,7 @@ logs: ## Follow logs from all services
 # --- Individual service dev ---
 
 backend-dev: ## Build and run backend (uses layer + BuildKit cache for incremental rebuilds)
-	docker compose --progress=plain up --force-recreate --build backend
+	docker compose down backend && docker compose --progress=plain up --force-recreate --build backend
 
 backend-dev-clean: ## Full backend rebuild from scratch (bypasses all caches)
 	docker compose --progress=plain build --no-cache backend

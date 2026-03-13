@@ -19,6 +19,7 @@ import mvc3Logo from "@/assets/games/mvc3-logo.png";
 import dbfzLogo from "@/assets/games/dbfz-logo.png";
 import ssbuLogo from "@/assets/games/ssbu-logo.png";
 import ssbmLogo from "@/assets/games/ssbm-logo.png";
+import s64Logo from "@/assets/games/s64-logo.png";
 
 export const POPULAR_GAMES: GameOption[] = [
     {
@@ -120,5 +121,10 @@ export const POPULAR_GAMES: GameOption[] = [
         id: 1,
         name: "SSBM",
         imageUrl: ssbmLogo
+    },
+    {
+        id: 4,
+        name: "Smash 64",
+        imageUrl: s64Logo
     }
 ];

@@ -16,7 +16,7 @@ on:
         required: true
       STARTGG_API_KEY:
         required: true
-      GEMINI_API_KEY:
+      GOOGLE_MAPS_API_KEY:
         required: true
 
 jobs:
@@ -37,4 +37,4 @@ jobs:
             TF_VAR_app_name=${{ inputs.app_name }}
             TF_VAR_aws_region=${{ inputs.aws_region }}
             TF_VAR_startgg_api_key=${{ secrets.STARTGG_API_KEY }}
-            TF_VAR_gemini_api_key=${{ secrets.GEMINI_API_KEY }}
+            TF_VAR_google_maps_api_key=${{ secrets.GOOGLE_MAPS_API_KEY }}

@@ -13,7 +13,7 @@ app.http.server.configuration.hostname = "0.0.0.0"
 app.http.server.configuration.port = 8080
 
 // MARK: - HTTP Client Configuration
-// Prevents hung requests to Gemini / start.gg from blocking event loop threads.
+// Prevents hung requests to Maps / start.gg from blocking event loop threads.
 app.http.client.configuration.timeout = .init(connect: .seconds(5), read: .seconds(15))
 
 // MARK: - Middleware
@@ -32,8 +32,8 @@ app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
 // MARK: - Startup Validation
 // Read once so misconfiguration fails immediately at boot, not at first request.
 guard let startGGKey = Environment.get("STARTGG_API_KEY"),
-      let geminiKey = Environment.get("GEMINI_API_KEY") else {
-    app.logger.critical("Required environment variables STARTGG_API_KEY and GEMINI_API_KEY must be set.")
+      let mapsKey = Environment.get("GOOGLE_MAPS_API_KEY") else {
+    app.logger.critical("Required environment variables STARTGG_API_KEY and GOOGLE_MAPS_API_KEY must be set.")
     exit(1)
 }
 
@@ -61,7 +61,7 @@ app.post("tournaments") { req -> UnifiedResponse in
     let location = try await NLPService.geocode(
         query: search.query,
         client: req.client,
-        apiKey: geminiKey,
+        apiKey: mapsKey,
         logger: req.logger
     )
 

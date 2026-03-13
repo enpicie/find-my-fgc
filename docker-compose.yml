@@ -16,7 +16,7 @@ services:
     command: ["serve", "--env", "development"]
     environment:
       - STARTGG_API_KEY=${STARTGG_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
       - LOG_LEVEL=debug
 
   frontend:
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
       args:
-        GEMINI_API_KEY: ${GEMINI_API_KEY}
+        GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
         VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8080}
     ports:
       - "3000:80"

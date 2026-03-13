@@ -15,8 +15,8 @@ variable "startgg_api_key" {
   sensitive   = true
 }
 
-variable "gemini_api_key" {
-  description = "Google Gemini API key"
+variable "google_maps_api_key" {
+  description = "Google Maps API key"
   type        = string
   sensitive   = true
 }

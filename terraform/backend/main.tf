@@ -73,8 +73,8 @@ module "service" {
       valueFrom = data.terraform_remote_state.bootstrap.outputs.startgg_api_key_secret_arn
     },
     {
-      name      = "GEMINI_API_KEY"
-      valueFrom = data.terraform_remote_state.bootstrap.outputs.gemini_api_key_secret_arn
+      name      = "GOOGLE_MAPS_API_KEY"
+      valueFrom = data.terraform_remote_state.bootstrap.outputs.google_maps_api_key_secret_arn
     }
   ]
 
