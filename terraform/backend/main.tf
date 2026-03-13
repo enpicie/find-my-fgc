@@ -47,7 +47,7 @@ resource "aws_lb_listener" "https" {
 }
 
 module "service" {
-  source = "git::https://github.com/enpicie/tf-module-ecs-alb-service.git?ref=v1.1.0"
+  source = "git::https://github.com/enpicie/tf-module-ecs-alb-service.git?ref=v1.2.0"
 
   name                  = "${var.app_name}-${var.deployment_env}"
   image                 = var.image
