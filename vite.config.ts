@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
     define: {
       // GEMINI_API_KEY is backend-only — never expose it in the browser bundle.
       'process.env.VITE_BACKEND_URL': JSON.stringify(env.VITE_BACKEND_URL),
+      'process.env.VITE_APP_VERSION': JSON.stringify(env.VITE_APP_VERSION ?? 'local'),
     },
   };
 });

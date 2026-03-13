@@ -37,8 +37,8 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
         </div>
       </div>
       <div className="mt-auto text-[10px] text-slate-500 border-t border-slate-700 pt-4 flex justify-between items-center">
-        {/* TODO: Uncomment and replace text to add a neat footer <span>API v1.6</span>
-        <span className="font-mono opacity-50 uppercase tracking-widest italic">Start.gg Hybrid Engine</span> */}
+        <span>{process.env.VITE_APP_VERSION}</span>
+        {/* <span className="font-mono opacity-50 uppercase tracking-widest italic">Start.gg Hybrid Engine</span> */}
       </div>
     </div>
   );
