@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import LocationInput from './LocationInput';
 import RadiusSlider from './RadiusSlider';
 import GameFilter from './GameFilter';
@@ -25,10 +26,11 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
   onSearch,
   loading
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-slate-800 p-6 rounded-xl shadow-xl flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold mb-4 text-indigo-400">Search Tournaments</h2>
+        <h2 className="text-xl font-bold mb-4 text-indigo-400">{t('search.heading')}</h2>
         <div className="space-y-6">
           <LocationInput value={location} onChange={setLocation} />
           <RadiusSlider value={radius} onChange={setRadius} />
@@ -38,7 +40,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
       </div>
       <div className="mt-auto text-[10px] text-slate-500 border-t border-slate-700 pt-4 flex justify-between items-center">
         <span>{process.env.VITE_APP_VERSION}</span>
-        <a href="#faq" className="hover:text-indigo-400 transition-colors uppercase tracking-widest font-mono font-bold text-slate-400">FAQ</a>
+        <a href="#faq" className="hover:text-indigo-400 transition-colors uppercase tracking-widest font-mono font-bold text-slate-400">{t('search.faq')}</a>
       </div>
     </div>
   );

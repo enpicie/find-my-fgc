@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "このサイトはデータを収集しません。",
+    "support": "サポート"
+  },
+  "search": {
+    "heading": "大会を検索",
+    "faq": "よくある質問"
+  },
+  "location": {
+    "label": "あなたの位置",
+    "placeholder": "郵便番号、市区町村、または都道府県..."
+  },
+  "radius": {
+    "label": "検索範囲: {{value}}マイル"
+  },
+  "games": {
+    "filterLabel": "ゲームで絞り込む"
+  },
+  "button": {
+    "scanning": "検索中...",
+    "locate": "大会を見つける"
+  },
+  "results": {
+    "heading": "イベント ({{count}})",
+    "empty": "場所を検索してください。",
+    "notFinding": "あなたのゲームのイベントが見つかりませんか？ →"
+  },
+  "card": {
+    "games": "ゲーム: {{games}}",
+    "details": "詳細"
+  },
+  "map": {
+    "viewOnStartGG": "start.ggで見る"
+  },
+  "faq": {
+    "back": "戻る",
+    "noteFrom": "enpicieからのメモ"
+  }
+}

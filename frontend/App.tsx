@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SearchPanel from './components/SearchPanel';
 import TournamentCard from './components/TournamentCard';
 import Map from './components/Map';
 import FAQ from './pages/FAQ';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTournaments } from './hooks/useTournaments';
 import logo from '@/assets/findmyfgclogo.png';
 
@@ -23,6 +25,7 @@ function useHash(): [string, (hash: string) => void] {
 }
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const [page, navigate] = useHash();
   const [faqScrollTarget, setFaqScrollTarget] = useState<string | undefined>(undefined);
 
@@ -53,11 +56,12 @@ const App: React.FC = () => {
             FindMyFGC
           </h1>
           <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1 uppercase">
-            This site does not collect your data.
+            {t('app.noDataCollection')}
           </div>
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <LanguageSwitcher />
         <a
           href="https://x.com/enpicie"
           target="_blank"
@@ -77,7 +81,7 @@ const App: React.FC = () => {
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 4.641 3.568 4.535 3.568 4.535s14.678.102 15.522 0c.513-.058 4.948-.12 5.244-4.815.234-3.641.009-6.959-.475-7.747zm-9.392 5.65c-.628.578-1.395.868-2.302.868H9.14v2.127H6.947V8.507h3.14c.907 0 1.674.29 2.302.868.628.578.942 1.289.942 2.134 0 .844-.314 1.555-.942 2.089zm6.418.686c-.628.578-1.395.868-2.302.868h-3.14v2.127h-2.193V8.507h3.14c.907 0 1.674.29 2.302.868.628.578.942 1.289.942 2.134 0 .844-.314 1.555-.942 2.089zm-9.574-3.044H9.14v2.127h1.193c.296 0 .536-.093.72-.278.184-.185.276-.43.276-.735 0-.306-.092-.551-.276-.736-.184-.185-.424-.278-.72-.278zm6.418 0h-1.193v2.127h1.193c.296 0 .536-.093.72-.278.184-.185.276-.43.276-.735 0-.306-.092-.551-.276-.736-.184-.185-.424-.278-.72-.278z" />
           </svg>
-          Support
+          {t('app.support')}
         </a>
       </div>
     </header>
@@ -117,19 +121,19 @@ const App: React.FC = () => {
 
           <section className="flex flex-col gap-4 pb-24 md:pb-4">
             <div id="results-heading" className="flex justify-between items-center scroll-mt-20">
-              <h2 className="text-lg font-bold text-slate-300">Events ({tournaments.length})</h2>
+              <h2 className="text-lg font-bold text-slate-300">{t('results.heading', { count: tournaments.length })}</h2>
             </div>
 
             {tournaments.length === 0 && !loading && (
               <div className="bg-slate-800/50 border border-dashed border-slate-700 rounded-lg p-8 text-center flex flex-col items-center gap-3">
                 <div className="text-3xl opacity-30">📍</div>
-                <p className="text-slate-400 text-sm">Search for a location.</p>
+                <p className="text-slate-400 text-sm">{t('results.empty')}</p>
                 {query && (
                   <button
                     onClick={() => goToFAQ('there-are-events-around-me-but-not-for-the-game-that-i-play')}
                     className="text-[11px] text-slate-600 hover:text-slate-400 transition-colors"
                   >
-                    Not finding events for your game? →
+                    {t('results.notFinding')}
                   </button>
                 )}
               </div>
