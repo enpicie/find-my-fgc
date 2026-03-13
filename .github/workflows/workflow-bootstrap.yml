@@ -30,5 +30,6 @@ jobs:
           aws_region: ${{ inputs.aws_region }}
           tf_directory: ./terraform/infra
           tf_vars: |
-            TF_VAR_app_name=${{ inputs.app_name }}
+            TF_VAR_app_name=${{ inputs.app_name }}-backend
             TF_VAR_aws_region=${{ inputs.aws_region }}
+          # App is *-backend since ECR repo is used for backend
