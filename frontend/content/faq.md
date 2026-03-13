@@ -16,13 +16,21 @@ Events are fetched live from start.gg each time you search. Results reflect upco
 
 Your searches are never stored or shared. Location is only used at search time to find nearby events and is not retained after your session.
 
+## There are events around me, but not for the game that I play.
+
+> Securing venues has become increasingly difficult, and most organizers focus on the games that are most popular locally. That said, the FGC has a lot of people who enjoy trying new games at locals. I'd recommend bringing a setup to a local, playing with people, and asking if they want to try your game. Talk to your TOs and see what you can do. You might find more interest than you expect.
+
 ## Why don't I see any results?
 
 Try increasing your search radius, search a larger city nearby, or try different game filters. Not all regions have many local events. Double-check for any typos in location name.
 
-## There are events around me, but not for the game that I play.
+Some smaller scenes also use Challonge as a good fit for small events. Challonge data is not yet supported. Try finding contacts in your regional area, and you may be able to learn of more events.
 
-> Securing venues has become increasingly difficult, and most organizers focus on the games that are most popular locally. That said, the FGC has a lot of people who enjoy trying new games at locals. I'd recommend bringing a setup to a local, playing with people, and asking if they want to try your game. Talk to your TOs and see what you can do. You might find more interest than you expect.
+## Will Challonge or other sites be supported in the future?
+
+Supporting start.gg was the top priority as it is currently the biggest tournament platform. Challonge integration may be added eventually as it is a long-term feature goal.
+
+> While sometimes difficult, I would still recommend using start.gg for local events. It is used for large events (often called "majors") such as Combo Breaker, and players' bracket results are stored by start.gg and used to help seed these tournaments. Especially as a T.O. for an older, smaller game (MBAACC) myself, having this data has often helped immensely with seeding. Hosting tournaments on start.gg can be helpful to growing your community and helping your players feel rewarded for their local play.
 
 ## Who made this?
 

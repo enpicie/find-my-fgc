@@ -66,7 +66,7 @@ const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
                   <div className="px-4 py-2 border-b border-slate-700/60 flex items-center gap-2">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-indigo-400/60">Note from enpicie</span>
                   </div>
-                  <div className="px-4 py-3">
+                  <div className="px-4 py-3 space-y-3">
                     {children}
                   </div>
                 </div>
