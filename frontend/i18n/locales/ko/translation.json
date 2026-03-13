@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "이 사이트는 데이터를 수집하지 않습니다.",
+    "support": "후원"
+  },
+  "search": {
+    "heading": "대회 검색",
+    "faq": "자주 묻는 질문"
+  },
+  "location": {
+    "label": "내 위치",
+    "placeholder": "우편번호, 도시 또는 지역..."
+  },
+  "radius": {
+    "label": "검색 반경: {{value}}마일"
+  },
+  "games": {
+    "filterLabel": "게임으로 필터"
+  },
+  "button": {
+    "scanning": "검색 중...",
+    "locate": "대회 찾기"
+  },
+  "results": {
+    "heading": "이벤트 ({{count}})",
+    "empty": "위치를 검색하세요.",
+    "notFinding": "내 게임 이벤트가 없나요? →"
+  },
+  "card": {
+    "games": "게임: {{games}}",
+    "details": "자세히"
+  },
+  "map": {
+    "viewOnStartGG": "start.gg에서 보기"
+  },
+  "faq": {
+    "back": "뒤로",
+    "noteFrom": "enpicie의 메모"
+  }
+}

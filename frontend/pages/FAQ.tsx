@@ -1,6 +1,28 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import faqContent from '../content/faq.md?raw';
+import { useTranslation } from 'react-i18next';
+
+import faqEn from '../content/faq.en.md?raw';
+import faqEs from '../content/faq.es.md?raw';
+import faqPtBR from '../content/faq.pt-BR.md?raw';
+import faqFr from '../content/faq.fr.md?raw';
+import faqDe from '../content/faq.de.md?raw';
+import faqKo from '../content/faq.ko.md?raw';
+import faqJa from '../content/faq.ja.md?raw';
+import faqZhCN from '../content/faq.zh-CN.md?raw';
+import faqZhTW from '../content/faq.zh-TW.md?raw';
+
+const FAQ_CONTENT: Record<string, string> = {
+  en:      faqEn,
+  es:      faqEs,
+  'pt-BR': faqPtBR,
+  fr:      faqFr,
+  de:      faqDe,
+  ko:      faqKo,
+  ja:      faqJa,
+  'zh-CN': faqZhCN,
+  'zh-TW': faqZhTW,
+};
 
 interface FAQProps {
   onBack: () => void;
@@ -14,6 +36,10 @@ function slugify(text: string): string {
 const InsideBlockquote = createContext(false);
 
 const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
+  const { t, i18n } = useTranslation();
+
+  const faqContent = FAQ_CONTENT[i18n.resolvedLanguage ?? 'en'] ?? faqEn;
+
   useEffect(() => {
     if (scrollTo) {
       const el = document.getElementById(scrollTo);
@@ -38,7 +64,7 @@ const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            Back
+            {t('faq.back')}
           </button>
         </div>
       </div>
@@ -60,11 +86,14 @@ const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
                 </p>
               );
             },
+            em: ({ children }) => (
+              <em className="text-slate-500 not-italic text-xs">{children}</em>
+            ),
             blockquote: ({ children }) => (
               <InsideBlockquote.Provider value={true}>
                 <div className="my-4 rounded-lg bg-slate-800/50 border border-slate-700/60 overflow-hidden">
                   <div className="px-4 py-2 border-b border-slate-700/60 flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-indigo-400/60">Note from enpicie</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-indigo-400/60">{t('faq.noteFrom')}</span>
                   </div>
                   <div className="px-4 py-3 space-y-3">
                     {children}

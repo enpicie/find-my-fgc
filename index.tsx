@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './frontend/i18n';
 import App from './frontend/App';
 
 const rootElement = document.getElementById('root');

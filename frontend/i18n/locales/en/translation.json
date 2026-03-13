@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "This site does not collect your data.",
+    "support": "Support"
+  },
+  "search": {
+    "heading": "Search Tournaments",
+    "faq": "FAQ"
+  },
+  "location": {
+    "label": "Your Location",
+    "placeholder": "Zip code, City, or State..."
+  },
+  "radius": {
+    "label": "Search Radius: {{value}} miles"
+  },
+  "games": {
+    "filterLabel": "Filter by Games"
+  },
+  "button": {
+    "scanning": "Scanning...",
+    "locate": "Locate Tournaments"
+  },
+  "results": {
+    "heading": "Events ({{count}})",
+    "empty": "Search for a location.",
+    "notFinding": "Not finding events for your game? →"
+  },
+  "card": {
+    "games": "Games: {{games}}",
+    "details": "Details"
+  },
+  "map": {
+    "viewOnStartGG": "View on start.gg"
+  },
+  "faq": {
+    "back": "Back",
+    "noteFrom": "Note from enpicie"
+  }
+}

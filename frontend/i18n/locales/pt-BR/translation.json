@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "Este site não coleta seus dados.",
+    "support": "Apoiar"
+  },
+  "search": {
+    "heading": "Buscar Torneios",
+    "faq": "FAQ"
+  },
+  "location": {
+    "label": "Sua Localização",
+    "placeholder": "CEP, Cidade ou Estado..."
+  },
+  "radius": {
+    "label": "Raio de busca: {{value}} milhas"
+  },
+  "games": {
+    "filterLabel": "Filtrar por Jogos"
+  },
+  "button": {
+    "scanning": "Buscando...",
+    "locate": "Localizar Torneios"
+  },
+  "results": {
+    "heading": "Eventos ({{count}})",
+    "empty": "Busque uma localização.",
+    "notFinding": "Não encontra eventos para seu jogo? →"
+  },
+  "card": {
+    "games": "Jogos: {{games}}",
+    "details": "Detalhes"
+  },
+  "map": {
+    "viewOnStartGG": "Ver no start.gg"
+  },
+  "faq": {
+    "back": "Voltar",
+    "noteFrom": "Nota de enpicie"
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { POPULAR_GAMES } from '../constants/games';
 
 interface GameFilterProps {
@@ -7,6 +8,7 @@ interface GameFilterProps {
 }
 
 const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }) => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -18,7 +20,7 @@ const GameFilter: React.FC<GameFilterProps> = ({ selectedGameIds, toggleGameId }
         className="w-full flex items-center justify-between p-3 text-sm font-medium text-slate-400 hover:bg-slate-700/30 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span>Filter by Games</span>
+          <span>{t('games.filterLabel')}</span>
           {selectedGameIds.length > 0 && (
             <span className="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
               {selectedGameIds.length}

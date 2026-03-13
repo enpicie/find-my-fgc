@@ -1,0 +1,40 @@
+{
+  "app": {
+    "noDataCollection": "本網站不收集您的資料。",
+    "support": "支持"
+  },
+  "search": {
+    "heading": "搜尋賽事",
+    "faq": "常見問題"
+  },
+  "location": {
+    "label": "您的位置",
+    "placeholder": "郵遞區號、城市或縣市..."
+  },
+  "radius": {
+    "label": "搜尋範圍：{{value}} 英里"
+  },
+  "games": {
+    "filterLabel": "依遊戲篩選"
+  },
+  "button": {
+    "scanning": "搜尋中...",
+    "locate": "尋找賽事"
+  },
+  "results": {
+    "heading": "賽事 ({{count}})",
+    "empty": "請搜尋一個位置。",
+    "notFinding": "找不到您遊戲的賽事？→"
+  },
+  "card": {
+    "games": "遊戲：{{games}}",
+    "details": "詳情"
+  },
+  "map": {
+    "viewOnStartGG": "在 start.gg 上查看"
+  },
+  "faq": {
+    "back": "返回",
+    "noteFrom": "enpicie 的備註"
+  }
+}
