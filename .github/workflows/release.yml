@@ -39,7 +39,7 @@ jobs:
       ecr_repository: ${{ needs.config.outputs.ecr_repository }}
     secrets:
       BACKEND_URL: ${{ secrets.BACKEND_URL }}
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_ECR: ${{ secrets.AWS_ROLE_ARN_ECR }}
 
   deploy:
     needs: [config, build]

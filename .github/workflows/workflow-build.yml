@@ -23,7 +23,7 @@ on:
     secrets:
       BACKEND_URL:
         required: true
-      AWS_ROLE_ARN:
+      AWS_ROLE_ARN_ECR:
         required: true
 
 jobs:
@@ -62,7 +62,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_ECR }}
           aws-region: ${{ inputs.aws_region }}
 
       - name: Login to Amazon ECR
