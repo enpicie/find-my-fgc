@@ -16,7 +16,7 @@ data "terraform_remote_state" "bootstrap" {
   backend = "s3"
   config = {
     bucket = "${data.aws_caller_identity.current.account_id}-terraform-state"
-    key    = "projects/${var.app_name}/infra.tfstate"
+    key    = "projects/${var.project_name}/infra.tfstate"
     region = var.aws_region
   }
 }

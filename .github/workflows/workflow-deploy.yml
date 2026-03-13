@@ -75,6 +75,7 @@ jobs:
           tf_directory: ./terraform/backend
           tf_vars: |
             TF_VAR_app_name=${{ inputs.app_name }}-backend
+            TF_VAR_project_name=${{ inputs.app_name }}
             TF_VAR_deployment_env=${{ inputs.deployment_env }}
             TF_VAR_aws_region=${{ inputs.aws_region }}
             TF_VAR_image=${{ inputs.backend_image }}

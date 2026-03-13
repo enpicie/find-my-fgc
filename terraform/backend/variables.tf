@@ -3,6 +3,11 @@ variable "app_name" {
   type        = string
 }
 
+variable "project_name" {
+  description = "The base project name used for shared state lookups (e.g. find-my-fgc, without service suffix)"
+  type        = string
+}
+
 variable "deployment_env" {
   description = "Deployment environment (e.g., dev, prod)"
   type        = string
