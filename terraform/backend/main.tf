@@ -12,6 +12,15 @@ data "terraform_remote_state" "aws_infra" {
   }
 }
 
+data "terraform_remote_state" "bootstrap" {
+  backend = "s3"
+  config = {
+    bucket = "${data.aws_caller_identity.current.account_id}-terraform-state"
+    key    = "projects/${var.app_name}/infra.tfstate"
+    region = var.aws_region
+  }
+}
+
 # The HTTPS listener is created here rather than in aws-infra because aws-infra
 # intentionally leaves listeners to app repos. This listener is shared by all
 # services attached to the ALB — additional services add listener rules, not
@@ -61,11 +70,11 @@ module "service" {
   secrets = [
     {
       name      = "STARTGG_API_KEY"
-      valueFrom = data.terraform_remote_state.aws_infra.outputs.startgg_api_key_secret_arn
+      valueFrom = data.terraform_remote_state.bootstrap.outputs.startgg_api_key_secret_arn
     },
     {
       name      = "GEMINI_API_KEY"
-      valueFrom = data.terraform_remote_state.aws_infra.outputs.gemini_api_key_secret_arn
+      valueFrom = data.terraform_remote_state.bootstrap.outputs.gemini_api_key_secret_arn
     }
   ]
 
