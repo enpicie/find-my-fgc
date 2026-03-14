@@ -20,17 +20,15 @@ import dbfzLogo from "@/assets/games/dbfz-logo.png";
 import ssbuLogo from "@/assets/games/ssbu-logo.png";
 import ssbmLogo from "@/assets/games/ssbm-logo.png";
 import s64Logo from "@/assets/games/s64-logo.png";
+import thirdSLogo from "@/assets/games/3s-logo.png";
+import doa6Logo from "@/assets/games/doa6-logo.png";
+import roa2Logo from "@/assets/games/roa2-logo.png";
 
 export const POPULAR_GAMES: GameOption[] = [
     {
         id: 43868,
         name: "SF6",
         imageUrl: sf6Logo
-    },
-    {
-        id: 49783,
-        name: "Tekken 8",
-        imageUrl: t8Logo
     },
     {
         id: 33945,
@@ -41,6 +39,21 @@ export const POPULAR_GAMES: GameOption[] = [
         id: 64423,
         name: "2XKO",
         imageUrl: xkoLogo
+    },
+    {
+        id: 49783,
+        name: "Tekken 8",
+        imageUrl: t8Logo
+    },
+    {
+        id: 114237,
+        name: "VF5 REVO",
+        imageUrl: vf5Logo
+    },
+    {
+        id: 3139,
+        name: "DOA 6",
+        imageUrl: doa6Logo
     },
     {
         id: 73221,
@@ -63,9 +76,14 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: mk1Logo
     },
     {
-        id: 114237,
-        name: "VF5 REVO",
-        imageUrl: vf5Logo
+        id: 582,
+        name: "VSAV",
+        imageUrl: vsavLogo
+    },
+    {
+        id: 610,
+        name: "3rd Strike",
+        imageUrl: thirdSLogo
     },
     {
         id: 50203,
@@ -83,21 +101,6 @@ export const POPULAR_GAMES: GameOption[] = [
         imageUrl: mbaaccLogo
     },
     {
-        id: 37,
-        name: "BBCF",
-        imageUrl: bbcfLogo
-    },
-    {
-        id: 36,
-        name: "GG Xrd REV2",
-        imageUrl: xrdLogo
-    },
-    {
-        id: 582,
-        name: "VSAV",
-        imageUrl: vsavLogo
-    },
-    {
         id: 32,
         name: "Skullgirls",
         imageUrl: skugsLogo
@@ -111,6 +114,21 @@ export const POPULAR_GAMES: GameOption[] = [
         id: 287,
         name: "DBFZ",
         imageUrl: dbfzLogo
+    },
+    {
+        id: 37,
+        name: "BBCF",
+        imageUrl: bbcfLogo
+    },
+    {
+        id: 36,
+        name: "GG Xrd REV2",
+        imageUrl: xrdLogo
+    },
+    {
+        id: 53945,
+        name: "ROA II",
+        imageUrl: roa2Logo
     },
     {
         id: 1386,
