@@ -75,7 +75,7 @@ const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
             h2: ({ children }) => {
               const id = slugify(String(children));
               return (
-                <h2 id={id} className="text-xl font-bold mt-8 mb-3 text-indigo-400 first:mt-0">{children}</h2>
+                <h2 id={id} className="text-xl font-bold mt-8 mb-3 text-indigo-400 first:mt-0 scroll-mt-14 md:scroll-mt-12">{children}</h2>
               );
             },
             p: ({ children }) => {
