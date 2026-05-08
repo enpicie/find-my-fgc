@@ -8,8 +8,8 @@ export const useTournaments = () => {
   const [selectedGameIds, setSelectedGameIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]);
-  const [locationName, setLocationName] = useState('San Francisco, CA');
+  const [center, setCenter] = useState<[number, number]>([41.8781, -87.6298]);
+  const [locationName, setLocationName] = useState('Chicago, IL');
   const [error, setError] = useState<string | null>(null);
 
   const toggleGameId = useCallback((id: number) => {
