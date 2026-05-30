@@ -1,10 +1,20 @@
 {
+  "seo": {
+    "home": {
+      "title": "FindMyFGC - Local Fighting Game Events Near You",
+      "description": "Find FGC events near you. Search local fighting game tournaments and locals on a map—Street Fighter, Tekken, Guilty Gear, and more. Free, powered by start.gg. Does not collect your data."
+    },
+    "faq": {
+      "title": "FAQ — Find Local FGC Events | FindMyFGC",
+      "description": "How to find fighting game locals and FGC tournaments near you. Learn how FindMyFGC searches start.gg events by location, radius, and game."
+    }
+  },
   "app": {
-    "noDataCollection": "This site does not collect your data.",
+    "subtitle": "Find local FGC events and fighting game tournaments near you.",
     "support": "Support"
   },
   "search": {
-    "heading": "Search Tournaments",
+    "heading": "Find FGC Events Near You",
     "faq": "FAQ"
   },
   "location": {
@@ -19,10 +29,10 @@
   },
   "button": {
     "scanning": "Scanning...",
-    "locate": "Locate Tournaments"
+    "locate": "Find Nearby Events"
   },
   "results": {
-    "heading": "Events ({{count}})",
+    "heading": "Local Fighting Game Events ({{count}})",
     "empty": "Search for a location.",
     "notFinding": "Not finding events for your game? →"
   },

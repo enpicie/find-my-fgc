@@ -6,6 +6,7 @@ import Map from './components/Map';
 import FAQ from './pages/FAQ';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTournaments } from './hooks/useTournaments';
+import { getWebApplicationJsonLd, usePageSeo } from './seo/usePageSeo';
 import logo from '@/assets/findmyfgclogo.png';
 
 function useHash(): [string, (hash: string) => void] {
@@ -27,6 +28,27 @@ function useHash(): [string, (hash: string) => void] {
 const App: React.FC = () => {
   const { t } = useTranslation();
   const [page, navigate] = useHash();
+  const seoPage = page === 'faq' ? 'faq' : 'home';
+  const seoDescription = t(`seo.${seoPage}.description`);
+
+  usePageSeo({
+    title: t(`seo.${seoPage}.title`),
+    description: seoDescription,
+  });
+
+  useEffect(() => {
+    if (page === 'faq') return;
+    const scriptId = 'findmyfgc-jsonld';
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+    script.textContent = getWebApplicationJsonLd(seoDescription);
+  }, [page, seoDescription]);
+
   const [faqScrollTarget, setFaqScrollTarget] = useState<string | undefined>(undefined);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -97,13 +119,13 @@ const App: React.FC = () => {
   const header = (
     <header className="bg-slate-900 border-b border-slate-800 p-4 shrink-0 flex items-center justify-between z-40 sticky top-0 md:relative">
       <div className="flex items-center gap-3 min-w-0">
-        <img src={logo} alt="FindMyFGC" className="p-1.5 rounded-lg shrink-0" style={{ height: '3.25rem', width: '3.25rem' }} />
+        <img src={logo} alt="FindMyFGC — find local fighting game events near you" className="p-1.5 rounded-lg shrink-0" style={{ height: '3.25rem', width: '3.25rem' }} />
         <div className="min-w-0">
           <h1 className="text-lg md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">
             FindMyFGC
           </h1>
           <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1 uppercase">
-            {t('app.noDataCollection')}
+            {t('app.subtitle')}
           </div>
         </div>
       </div>

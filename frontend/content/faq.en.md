@@ -1,6 +1,10 @@
-## What is FindMyFGC?
+## How do I find FGC events near me?
 
-FindMyFGC is a tournament finder for the Fighting Game Community (FGC). Enter a location, set a search radius, and nearby events in your area will be listed and shown on the map. All event data is pulled from tournaments found on start.gg in real time.
+FindMyFGC helps you find local Fighting Game Community (FGC) events and fighting game tournaments near you. Enter your city, zip code, or neighborhood, choose how far you’re willing to travel, and click Find Events Near Me (or Locate Tournaments). You’ll see fighting game locals and tournaments on a map and in a list. Use the game filter for Street Fighter, Tekken, Guilty Gear, and other titles you play. All event data is pulled from tournaments found on start.gg in real time.
+
+## What’s the difference between FGC locals and tournaments?
+
+"Locals" is just a common name for tournaments in a specific area. Typically this describes recurring events that local fighting game enjoyers may regularly attend to give a regional community a space to grow and thrive. Locals are often events that host tournaments, but not all local scenes host competitive tournaments and some are oriented more for casual play.
 
 ## What games can I search for?
 

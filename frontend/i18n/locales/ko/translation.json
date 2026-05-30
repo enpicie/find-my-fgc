@@ -1,6 +1,6 @@
 {
   "app": {
-    "noDataCollection": "이 사이트는 데이터를 수집하지 않습니다.",
+    "subtitle": "당신 근처의 로컬 FGC 이벤트와 격투 게임 토너먼트를 찾으세요.",
     "support": "후원"
   },
   "search": {

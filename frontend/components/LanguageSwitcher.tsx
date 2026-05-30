@@ -15,7 +15,7 @@ const LanguageSwitcher: React.FC = () => {
         value={currentLang.code}
         onChange={(e) => i18n.changeLanguage(e.target.value)}
         aria-label="Select language"
-        className="appearance-none bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium rounded-lg pl-2.5 pr-5 py-1.5 cursor-pointer transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="appearance-none w-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium rounded-lg px-3 py-1.5 pr-6 cursor-pointer transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <option key={lang.code} value={lang.code}>
@@ -24,7 +24,7 @@ const LanguageSwitcher: React.FC = () => {
         ))}
       </select>
       <svg
-        className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500"
+        className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

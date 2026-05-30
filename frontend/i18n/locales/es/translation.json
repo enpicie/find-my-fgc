@@ -1,6 +1,6 @@
 {
   "app": {
-    "noDataCollection": "Este sitio no recopila tus datos.",
+    "subtitle": "Encuentra eventos locales de FGC y torneos de videojuegos de lucha cerca de ti.",
     "support": "Apoyar"
   },
   "search": {

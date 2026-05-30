@@ -1,6 +1,6 @@
 {
   "app": {
-    "noDataCollection": "このサイトはデータを収集しません。",
+    "subtitle": "あなたの近くのローカルFGCイベントと格闘ゲームトーナメントを探してください。",
     "support": "サポート"
   },
   "search": {

@@ -1,6 +1,6 @@
 {
   "app": {
-    "noDataCollection": "Ce site ne collecte pas vos données.",
+    "subtitle": "Trouvez des événements FGC locaux et des tournois de jeux de combat près de chez vous.",
     "support": "Soutenir"
   },
   "search": {
