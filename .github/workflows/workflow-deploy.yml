@@ -59,7 +59,7 @@ jobs:
           echo "[debug] bucket_name=$BUCKET"
 
       - name: Upload dist to S3
-        uses: enpicie/gh-action-workflow-s3-upload@v1.0.0
+        uses: enpicie/gh-action-workflow-s3-upload@v1.0.1
         with:
           artifact_name: frontend-dist
           bucket_name: ${{ steps.get-bucket.outputs.bucket_name }}
