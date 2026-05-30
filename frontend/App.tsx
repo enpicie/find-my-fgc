@@ -7,33 +7,19 @@ import FAQ from './pages/FAQ';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTournaments } from './hooks/useTournaments';
 import { getWebApplicationJsonLd, usePageSeo } from './seo/usePageSeo';
+import { usePathRoute } from './routing/usePathRoute';
 import logo from '@/assets/findmyfgclogo.png';
-
-function useHash(): [string, (hash: string) => void] {
-  const [hash, setHash] = useState(() => window.location.hash.slice(1));
-
-  useEffect(() => {
-    const onHashChange = () => setHash(window.location.hash.slice(1));
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
-
-  const navigate = (newHash: string) => {
-    window.location.hash = newHash;
-  };
-
-  return [hash, navigate];
-}
 
 const App: React.FC = () => {
   const { t } = useTranslation();
-  const [page, navigate] = useHash();
+  const { page, navigate, faqScrollTarget } = usePathRoute();
   const seoPage = page === 'faq' ? 'faq' : 'home';
   const seoDescription = t(`seo.${seoPage}.description`);
 
   usePageSeo({
     title: t(`seo.${seoPage}.title`),
     description: seoDescription,
+    path: page === 'faq' ? 'faq' : undefined,
   });
 
   useEffect(() => {
@@ -49,7 +35,6 @@ const App: React.FC = () => {
     script.textContent = getWebApplicationJsonLd(seoDescription);
   }, [page, seoDescription]);
 
-  const [faqScrollTarget, setFaqScrollTarget] = useState<string | undefined>(undefined);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -64,13 +49,8 @@ const App: React.FC = () => {
   }, []);
 
   const goToFAQ = (section?: string) => {
-    setFaqScrollTarget(section);
-    navigate('faq');
+    navigate('/faq', section);
   };
-
-  useEffect(() => {
-    if (page !== 'faq') setFaqScrollTarget(undefined);
-  }, [page]);
 
   const {
     query, setQuery,
@@ -84,12 +64,13 @@ const App: React.FC = () => {
   const navButtons = (
     <>
       <LanguageSwitcher />
-      <button
-        onClick={() => { goToFAQ(); setMobileMenuOpen(false); }}
+      <a
+        href="/faq"
+        onClick={() => setMobileMenuOpen(false)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-colors"
       >
         FAQ
-      </button>
+      </a>
       <a
         href="https://x.com/enpicie"
         target="_blank"
@@ -119,6 +100,7 @@ const App: React.FC = () => {
   const header = (
     <header className="bg-slate-900 border-b border-slate-800 p-4 shrink-0 flex items-center justify-between z-40 sticky top-0 md:relative">
       <div className="flex items-center gap-3 min-w-0">
+        <a href="/" className="flex items-center gap-3 min-w-0 hover:opacity-90 transition-opacity">
         <img src={logo} alt="FindMyFGC — find local fighting game events near you" className="p-1.5 rounded-lg shrink-0" style={{ height: '3.25rem', width: '3.25rem' }} />
         <div className="min-w-0">
           <h1 className="text-lg md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">
@@ -128,6 +110,7 @@ const App: React.FC = () => {
             {t('app.subtitle')}
           </div>
         </div>
+        </a>
       </div>
 
       {/* Desktop nav */}
@@ -165,7 +148,7 @@ const App: React.FC = () => {
     return (
       <div className="flex flex-col min-h-screen bg-slate-950 font-sans">
         {header}
-        <FAQ onBack={() => navigate('')} scrollTo={faqScrollTarget} />
+        <FAQ onBack={() => navigate('/')} scrollTo={faqScrollTarget} />
       </div>
     );
   }

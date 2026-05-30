@@ -4,6 +4,8 @@ import { absoluteUrl, OG_IMAGE_PATH, SITE_NAME, SITE_URL } from './site';
 export interface PageSeo {
   title: string;
   description: string;
+  /** Path segment after origin, e.g. `faq` for `/faq`. Omit for home. */
+  path?: string;
   noindex?: boolean;
 }
 
@@ -30,9 +32,9 @@ function upsertLink(rel: string, href: string) {
   el.href = href;
 }
 
-export function usePageSeo({ title, description, noindex = false }: PageSeo) {
+export function usePageSeo({ title, description, path, noindex = false }: PageSeo) {
   useEffect(() => {
-    const canonical = absoluteUrl('/');
+    const canonical = absoluteUrl(path ? `/${path}` : '/');
     const image = absoluteUrl(OG_IMAGE_PATH);
 
     document.title = title;
@@ -88,7 +90,7 @@ export function usePageSeo({ title, description, noindex = false }: PageSeo) {
       m.name = 'twitter:image';
       return m;
     }, image);
-  }, [title, description, noindex]);
+  }, [title, description, path, noindex]);
 }
 
 /** JSON-LD for crawlers (injected into document head, not visible on page). */

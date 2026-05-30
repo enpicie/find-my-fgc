@@ -51,7 +51,7 @@ const FAQ: React.FC<FAQProps> = ({ onBack, scrollTo }) => {
     } else {
       window.scrollTo(0, 0);
     }
-  }, []);
+  }, [scrollTo]);
 
   return (
     <>
