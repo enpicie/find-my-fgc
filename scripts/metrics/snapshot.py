@@ -224,89 +224,157 @@ def outcomes(days):
 
 # ── Rendering ─────────────────────────────────────────────────────────────────
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--days", type=int, default=30, help="window in days (default 30)")
-    args = ap.parse_args()
-    today = datetime.date.today()
+def collect(days):
+    """Gather everything into one plain dict. Sections that fail carry an
+    "error" key rather than raising, so a partial outage still yields a usable
+    snapshot instead of nothing."""
+    out = {
+        "generated": datetime.datetime.now(datetime.timezone.utc)
+                             .replace(microsecond=0).isoformat(),
+        "window_days": days,
+        "traffic": None,
+        "searches": None,
+    }
 
-    print(f"# FindMyFGC — usage snapshot\n")
-    print(f"**Generated {today.isoformat()}** · window: trailing {args.days} days\n")
-
-    # -- traffic
-    print("## Traffic (Cloudflare — the real numbers)\n")
-    cf, cf_err = cloudflare(args.days)
+    cf, cf_err = cloudflare(days)
     if cf_err:
-        print(f"> Not available: {cf_err}\n")
+        out["traffic"] = {"error": cf_err}
     else:
         rows = cf["rows"]
-        req = sum(r["sum"]["requests"] for r in rows)
-        pv = sum(r["sum"]["pageViews"] for r in rows)
-        by = sum(r["sum"]["bytes"] for r in rows)
-        uniq = [r["uniq"]["uniques"] for r in rows]
-        first, last = rows[0]["dimensions"]["date"], rows[-1]["dimensions"]["date"]
-        print(f"Plan: {cf['plan']} · data present {first} to {last} ({len(rows)} days)\n")
-        print(f"- Requests: **{req:,}**")
-        print(f"- Page views: **{pv:,}**")
-        print(f"- Mean daily unique visitors: **{statistics.mean(uniq):,.0f}**")
-        print(f"- Bandwidth: **{by/1e9:.2f} GB**\n")
-        print("> Do not sum the uniques column — it is a daily distinct count with no")
-        print("> cross-day dedupe, so the sum is visitor-days, not people.\n")
-
         geo = collections.Counter()
         for r in rows:
             for e in r["sum"].get("countryMap", []):
                 geo[e["clientCountryName"]] += e["requests"]
-        if geo:
-            total = sum(geo.values())
-            print("| Country | Requests | Share |")
-            print("|---|---:|---:|")
-            for country, n in geo.most_common(8):
-                print(f"| {country} | {n:,} | {100*n/total:.1f}% |")
-            print()
+        geo_total = sum(geo.values()) or 1
+        out["traffic"] = {
+            "plan": cf["plan"],
+            "first_day": rows[0]["dimensions"]["date"],
+            "last_day": rows[-1]["dimensions"]["date"],
+            "days": len(rows),
+            "requests": sum(r["sum"]["requests"] for r in rows),
+            "page_views": sum(r["sum"]["pageViews"] for r in rows),
+            "bytes": sum(r["sum"]["bytes"] for r in rows),
+            "mean_daily_uniques": round(statistics.mean(
+                [r["uniq"]["uniques"] for r in rows])),
+            "daily": [
+                {"date": r["dimensions"]["date"],
+                 "requests": r["sum"]["requests"],
+                 "page_views": r["sum"]["pageViews"],
+                 "uniques": r["uniq"]["uniques"]}
+                for r in rows
+            ],
+            "countries": [
+                {"country": c, "requests": n, "share_pct": round(100 * n / geo_total, 1)}
+                for c, n in geo.most_common(10)
+            ],
+        }
 
-    # -- searches
-    print("## Searches (CloudWatch — what Cloudflare cannot see)\n")
-    per_day, s_err = searches(args.days)
+    per_day, s_err = searches(days)
     if s_err:
-        print(f"> Not available: {s_err}\n")
+        out["searches"] = {"error": s_err}
     else:
         total = sum(per_day.values())
-        n = len(per_day) or 1
-        print(f"- Total searches: **{total:,}**")
-        print(f"- Mean per day: **{total/n:,.0f}** · median "
-              f"**{statistics.median(per_day.values()):,.0f}**\n")
-
-        o = outcomes(args.days)
+        o = outcomes(days)
         comp, zero = o.get("completions"), o.get("zero")
-        if comp and zero is not None:
-            print(f"- Zero-result rate: **{100*zero/comp:.1f}%** ({zero:,} of {comp:,})")
-        if o.get("geocode_fail") is not None and total:
-            gf = o["geocode_fail"]
-            print(f"- Geocode failures (HTTP 422): **{gf:,}** ({100*gf/total:.2f}% of searches)")
-        if o.get("startgg_err") is not None:
-            print(f"- start.gg upstream errors: **{o['startgg_err']:,}**")
-        print()
+        out["searches"] = {
+            "total": total,
+            "mean_per_day": round(total / (len(per_day) or 1)),
+            "median_per_day": round(statistics.median(per_day.values())) if per_day else 0,
+            "completions": comp,
+            "zero_results": zero,
+            "zero_rate_pct": round(100 * zero / comp, 1) if comp and zero is not None else None,
+            "geocode_failures": o.get("geocode_fail"),
+            "geocode_failure_rate_pct": (
+                round(100 * o["geocode_fail"] / total, 2)
+                if o.get("geocode_fail") is not None and total else None
+            ),
+            "startgg_errors": o.get("startgg_err"),
+            "daily": [{"date": d, "searches": per_day[d]} for d in sorted(per_day)],
+        }
 
-        if per_day:
-            peak = max(per_day.values()) or 1
-            print("```")
-            for day in sorted(per_day):
-                bar = "#" * max(1, round(per_day[day] / peak * 40))
-                print(f"{day}  {per_day[day]:5d}  {bar}")
-            print("```\n")
+    t, s = out["traffic"], out["searches"]
+    if t and "error" not in t and s and "error" not in s and t["mean_daily_uniques"]:
+        out["searches_per_100_visitors"] = round(
+            100 * s["mean_per_day"] / t["mean_daily_uniques"])
+    return out
 
-    if cf and not cf_err and per_day and not s_err:
-        visitors = statistics.mean([r["uniq"]["uniques"] for r in cf["rows"]])
-        per = sum(per_day.values()) / (len(per_day) or 1)
-        if visitors:
-            print(f"**Conversion:** ~{100*per/visitors:.0f} searches per 100 daily visitors.\n")
 
-    print("---\n")
-    print("*Regenerate with `python3 scripts/metrics/snapshot.py`. "
-          "Traffic is Cloudflare edge data; searches are parsed from Vapor logs. "
-          "Search history is bounded by CloudWatch log retention.*")
+def render_markdown(d):
+    lines = ["# FindMyFGC — usage snapshot", "",
+             f"**Generated {d['generated'][:10]}** · window: trailing {d['window_days']} days", ""]
+
+    lines += ["## Traffic (Cloudflare — the real numbers)", ""]
+    t = d["traffic"]
+    if not t or "error" in t:
+        lines += [f"> Not available: {t['error'] if t else 'no data'}", ""]
+    else:
+        lines += [f"Plan: {t['plan']} · data present {t['first_day']} to {t['last_day']} "
+                  f"({t['days']} days)", "",
+                  f"- Requests: **{t['requests']:,}**",
+                  f"- Page views: **{t['page_views']:,}**",
+                  f"- Mean daily unique visitors: **{t['mean_daily_uniques']:,}**",
+                  f"- Bandwidth: **{t['bytes']/1e9:.2f} GB**", "",
+                  "> Do not sum the uniques column — it is a daily distinct count with no",
+                  "> cross-day dedupe, so the sum is visitor-days, not people.", ""]
+        if t["countries"]:
+            lines += ["| Country | Requests | Share |", "|---|---:|---:|"]
+            lines += [f"| {c['country']} | {c['requests']:,} | {c['share_pct']}% |"
+                      for c in t["countries"][:8]]
+            lines += [""]
+
+    lines += ["## Searches (CloudWatch — what Cloudflare cannot see)", ""]
+    s = d["searches"]
+    if not s or "error" in s:
+        lines += [f"> Not available: {s['error'] if s else 'no data'}", ""]
+    else:
+        lines += [f"- Total searches: **{s['total']:,}**",
+                  f"- Mean per day: **{s['mean_per_day']:,}** · median **{s['median_per_day']:,}**"]
+        if s["zero_rate_pct"] is not None:
+            lines += [f"- Zero-result rate: **{s['zero_rate_pct']}%** "
+                      f"({s['zero_results']:,} of {s['completions']:,})"]
+        if s["geocode_failure_rate_pct"] is not None:
+            lines += [f"- Geocode failures (HTTP 422): **{s['geocode_failures']:,}** "
+                      f"({s['geocode_failure_rate_pct']}% of searches)"]
+        if s["startgg_errors"] is not None:
+            lines += [f"- start.gg upstream errors: **{s['startgg_errors']:,}**"]
+        lines += [""]
+        if s["daily"]:
+            peak = max(x["searches"] for x in s["daily"]) or 1
+            lines += ["```"]
+            lines += [f"{x['date']}  {x['searches']:5d}  "
+                      f"{'#' * max(1, round(x['searches'] / peak * 40))}" for x in s["daily"]]
+            lines += ["```", ""]
+
+    if d.get("searches_per_100_visitors") is not None:
+        lines += [f"**Conversion:** ~{d['searches_per_100_visitors']} searches "
+                  "per 100 daily visitors.", ""]
+
+    lines += ["---", "",
+              "*Regenerate with `python3 scripts/metrics/snapshot.py`. Traffic is Cloudflare "
+              "edge data; searches are parsed from Vapor logs. Search history is bounded by "
+              "CloudWatch log retention.*"]
+    return "\n".join(lines)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--days", type=int, default=30, help="window in days (default 30)")
+    ap.add_argument("--format", choices=["markdown", "json"], default="markdown",
+                    help="markdown for humans, json to feed the public page renderer")
+    args = ap.parse_args()
+
+    data = collect(args.days)
+    if args.format == "json":
+        print(json.dumps(data, indent=2))
+    else:
+        print(render_markdown(data))
+
+    # Non-zero exit if BOTH sources failed, so a scheduled job fails loudly
+    # rather than publishing an empty page.
+    t, s = data["traffic"], data["searches"]
+    if (not t or "error" in t) and (not s or "error" in s):
+        sys.exit("both data sources failed; refusing to report success")
 
 
 if __name__ == "__main__":
