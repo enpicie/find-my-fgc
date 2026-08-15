@@ -15,11 +15,13 @@ final class TournamentServiceTests: XCTestCase {
             city: "San Francisco",
             addrState: "CA",
             venueAddress: "123 Main St",
+            lat: 37.7749,
+            lng: -122.4194,
             startAt: 1715856000,
             url: "/tournament/test",
             images: [StartGGImage(url: "test.png", type: "profile")],
             events: [
-                EventNode(id: 1, name: "SF6", videogame: VideogameNode(id: 43868, name: "Street Fighter 6"))
+                StartGGEvent(id: 1, name: "SF6", videogame: StartGGVideogame(id: 43868, name: "Street Fighter 6"))
             ]
         )
         
