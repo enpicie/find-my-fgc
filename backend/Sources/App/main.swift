@@ -27,7 +27,15 @@ let corsConfiguration = CORSMiddleware.Configuration(
     allowedMethods: [.GET, .POST, .OPTIONS],
     allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith]
 )
-app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
+// `at: .beginning` is load-bearing — do not drop it. Vapor seeds app.middleware with
+// RouteLoggingMiddleware and ErrorMiddleware, and the default `use(_:)` appends, which
+// would leave CORS *inside* ErrorMiddleware. A thrown Abort then reaches CORS as a failed
+// future, so CORSMiddleware's `response.map { ... }` never runs, and ErrorMiddleware —
+// sitting upstream — turns the error into a Response that never passes back through CORS.
+// The result is error responses with no Access-Control-* headers, which a browser reports
+// as an opaque "Failed to fetch" instead of the API's actual reason string. Inserting CORS
+// at the front puts it outside ErrorMiddleware, so error responses get the headers too.
+app.middleware.use(CORSMiddleware(configuration: corsConfiguration), at: .beginning)
 
 // MARK: - Startup Validation
 // Read once so misconfiguration fails immediately at boot, not at first request.
