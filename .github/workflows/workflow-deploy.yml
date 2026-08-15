@@ -85,3 +85,4 @@ jobs:
             TF_VAR_aws_region=${{ inputs.aws_region }}
             TF_VAR_image=${{ inputs.backend_image }}
             TF_VAR_domain_name=api.findmyfgc.cc
+            TF_VAR_alarm_email=enpicie@gmail.com
