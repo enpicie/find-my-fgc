@@ -1,0 +1,32 @@
+name: 'Test'
+
+# Nothing in the release path runs the test suite. workflow-build.yml builds the
+# Docker image, and the Dockerfile runs `swift build -c release`, which compiles the
+# executable target only — the test target is never built, let alone executed. This
+# workflow is the first thing that actually runs `swift test`.
+#
+# Deliberately not wired into workflow-build.yml as a blocking gate yet: `swift test`
+# has never been run against this package, so its first green run should happen on a
+# pull request rather than on a release tag. Once it is proven, add
+# `needs: test-backend` to build-backend so a failing suite blocks the image push.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    # Matches the build stage in backend/Dockerfile.
+    container: swift:6.0-noble
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve dependencies
+        working-directory: ./backend
+        run: swift package resolve
+
+      - name: Run tests
+        working-directory: ./backend
+        run: swift test
