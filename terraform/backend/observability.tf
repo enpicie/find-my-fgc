@@ -38,10 +38,21 @@ locals {
 # in quiet periods instead of sitting in INSUFFICIENT_DATA.
 
 # One line per search. Emitted after the request body is parsed.
+#
+# Matching on the rendered metadata keys rather than a prefix, because Vapor
+# renders metadata sorted ALPHABETICALLY, not in declaration order. The line
+# reads "POST /tournaments [gameIds: ..., query: ..., radius: ...]" only because
+# gameIds happens to sort first today; adding any key ahead of it (country,
+# cacheHit, clientId) would silently drop this metric to zero.
+#
+# Requiring all three terms pins it to the search line under any key ordering:
+#   - the route-logging and completion lines have neither "query:" nor "radius:"
+#   - the raw-body line carries JSON, where the text is "query":" — the colon
+#     never directly follows the key, so it does not match
 resource "aws_cloudwatch_log_metric_filter" "searches" {
   name           = "${var.app_name}-${var.deployment_env}-searches"
   log_group_name = module.service.log_group_name
-  pattern        = "\"POST /tournaments [gameIds:\""
+  pattern        = "\"POST /tournaments\" \"query:\" \"radius:\""
 
   metric_transformation {
     name          = "Searches"
