@@ -63,6 +63,10 @@ module "service" {
 
   # Vapor exposes GET /health by default — no custom route needed.
   health_check_path = "/health"
+
+  # Without this the module's 30-day default applies, and the search log is
+  # continuously deleted. See variables.tf for why this is not just a nicety.
+  log_retention_days = var.log_retention_days
   # Tasks are in private subnets with a NAT Gateway (defined in aws-infra),
   # so they don't need a public IP for outbound traffic (ECR pulls, etc.).
   assign_public_ip = false

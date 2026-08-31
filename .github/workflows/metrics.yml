@@ -1,0 +1,94 @@
+name: 'Publish Usage Metrics'
+
+# Renders the public usage page at the GitHub Pages URL for this repo.
+#
+# Runs on a schedule so the numbers stay current without anyone remembering to
+# look. Deploys via the Pages artifact rather than committing to the repo, so a
+# monthly refresh does not add noise to the git history.
+#
+# Deliberately hosted on GitHub Pages rather than the project's own S3 +
+# CloudFront + Cloudflare stack: a page reporting on a system should not share
+# infrastructure with it.
+
+on:
+  schedule:
+    # 09:00 UTC on the 1st of each month.
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Window in days
+        required: false
+        default: '30'
+        type: string
+
+permissions:
+  id-token: write # OIDC, for both the AWS role and the Pages deployment
+  contents: read
+  pages: write
+
+# A scheduled run and a manual run must not race to publish.
+concurrency:
+  group: metrics-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load deployment config
+        id: vars
+        run: |
+          source .github/deployment.env
+          echo "aws_region=$AWS_REGION" >> $GITHUB_OUTPUT
+
+      # Read-only role: CloudWatch GetMetricData and Logs Insights, nothing else.
+      # Deliberately not the deploy role, which also carries ecs:* and
+      # secretsmanager:* and has no business in a job that publishes publicly.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_METRICS_READ }}
+          aws-region: ${{ steps.vars.outputs.aws_region }}
+
+      - name: Generate snapshot
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          mkdir -p _site
+          python3 scripts/metrics/snapshot.py \
+            --days "${{ inputs.days || '30' }}" \
+            --format json > _site/metrics.json
+          python3 scripts/metrics/render_page.py _site/metrics.json > _site/index.html
+
+      # Fails the run rather than publishing a page that silently lost a source.
+      # snapshot.py already exits non-zero when BOTH sources fail; this catches
+      # the case where exactly one did.
+      - name: Check for partial data
+        run: |
+          if grep -q '"error"' _site/metrics.json; then
+            echo "::warning::A data source failed — the published page will show a partial-data banner."
+            python3 -c "
+          import json
+          d = json.load(open('_site/metrics.json'))
+          for k in ('traffic', 'searches'):
+              v = d.get(k) or {}
+              if v.get('error'):
+                  print(f'  {k}: {v[\"error\"]}')
+          "
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

@@ -144,3 +144,11 @@ examples/
 
 # Swift build artifacts
 backend/.build/
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
