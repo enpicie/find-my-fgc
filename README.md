@@ -32,7 +32,7 @@ Use [Makefile](./Makefile) targets to build and run this app locally:
 - `make frontend-dev` - Builds Vite React frontend with hot reload and starts serving app locally
 - `make backend-dev` - Builds backend image and starts Docker container
   - Requires Docker Desktop to be running
-- backend-dev-clean - Fully rebuilds backend from scratch (bypasses all caches)
+- `make backend-dev-clean` - Fully rebuilds backend from scratch (bypasses all caches)
 
 ## 🏗 Directory Structure
 
