@@ -144,3 +144,8 @@ examples/
 
 # Swift build artifacts
 backend/.build/
+
+# Terraform local state/plugin cache — never committed in this repo's history
+# (no *.terraform.lock.hcl has ever been tracked for backend/frontend/infra)
+.terraform/
+*.terraform.lock.hcl
