@@ -71,6 +71,10 @@ jobs:
             --distribution-id "$DISTRIBUTION_ID" \
             --paths "/*"
 
+      - name: Get CloudFront distribution ID
+        id: get-distribution
+        run: echo "distribution_id=$(tofu -chdir=./terraform/frontend output -raw distribution_id)" >> $GITHUB_OUTPUT
+
       - name: Deploy Backend Infrastructure via Terraform (api.findmyfgc.cc)
         uses: enpicie/gh-action-workflow-terraform-run@v1.0.0
         with:
@@ -85,3 +89,4 @@ jobs:
             TF_VAR_aws_region=${{ inputs.aws_region }}
             TF_VAR_image=${{ inputs.backend_image }}
             TF_VAR_domain_name=api.findmyfgc.cc
+            TF_VAR_cloudfront_distribution_id=${{ steps.get-distribution.outputs.distribution_id }}

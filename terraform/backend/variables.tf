@@ -28,3 +28,9 @@ variable "domain_name" {
   description = "Custom domain name for the API (e.g. api.findmyfgc.cc)"
   type        = string
 }
+
+variable "cloudfront_distribution_id" {
+  description = "Frontend CloudFront distribution ID, used for the site-traffic widget on the usage dashboard. Leave empty to omit the widget."
+  type        = string
+  default     = ""
+}

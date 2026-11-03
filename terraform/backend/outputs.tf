@@ -12,3 +12,8 @@ output "alb_dns_name" {
   description = "ALB DNS name (use for Route53 alias or Cloudflare CNAME)"
   value       = data.terraform_remote_state.aws_infra.outputs.alb_dns_name
 }
+
+output "usage_dashboard_url" {
+  description = "CloudWatch usage dashboard"
+  value       = "https://${var.aws_region}.console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards/dashboard/${aws_cloudwatch_dashboard.usage.dashboard_name}"
+}
